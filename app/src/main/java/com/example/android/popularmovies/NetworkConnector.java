@@ -19,7 +19,7 @@ import static android.content.ContentValues.TAG;
 public class NetworkConnector {
 
     final static String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
-    final static String TMDB_KEY = "add your key here";
+    final static String TMDB_KEY = "add key here";
     final static String QUERY_PARAM = "sort_by";
     final static String KEY = "api_key";
 
