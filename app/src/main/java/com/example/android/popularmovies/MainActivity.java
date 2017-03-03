@@ -1,6 +1,9 @@
 package com.example.android.popularmovies;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,7 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private RecyclerView mMovieRecyclerView;
     private MovieAdapter mMovieAdapter;
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         mMovieRecyclerView.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
         mMovieRecyclerView.setLayoutManager(gridLayoutManager);
-        mMovieAdapter = new MovieAdapter(this);
+        mMovieAdapter = new MovieAdapter(this, this);
         mMovieRecyclerView.setAdapter(mMovieAdapter);
         loadMovies(popularSort);
     }
@@ -39,6 +42,16 @@ public class MainActivity extends AppCompatActivity {
     private void loadMovies(String sortPreference) {
         String sortBy = sortPreference;
         new FetchMoviesTask().execute(sortBy);
+    }
+
+    @Override
+    public void onClick(Movie selectedMovie) {
+        Context context = this;
+        Class movieDetailClassDestination = MovieDetailActivity.class;
+//        Bundle movieDetailBundle = new Bundle();
+        Intent openMovieDetailActivity = new Intent(context, movieDetailClassDestination);
+        openMovieDetailActivity.putExtra("movieDetail", selectedMovie);
+        startActivity(openMovieDetailActivity);
     }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
