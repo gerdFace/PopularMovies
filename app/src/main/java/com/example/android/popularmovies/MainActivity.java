@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -14,6 +18,9 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mMovieRecyclerView;
     private MovieAdapter mMovieAdapter;
+    private String popularSort = "popular";
+    private String topRatedSort = "top_rated";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +33,11 @@ public class MainActivity extends AppCompatActivity {
         mMovieRecyclerView.setLayoutManager(gridLayoutManager);
         mMovieAdapter = new MovieAdapter(this);
         mMovieRecyclerView.setAdapter(mMovieAdapter);
-        loadMovies();
+        loadMovies(popularSort);
     }
 
-    private void loadMovies() {
-        String sortBy = "";
+    private void loadMovies(String sortPreference) {
+        String sortBy = sortPreference;
         new FetchMoviesTask().execute(sortBy);
     }
 
@@ -61,5 +68,28 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<Movie> results) {
             mMovieAdapter.addMovies(results);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.poster_sort_preference, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int menuItemId = item.getItemId();
+
+        if (menuItemId == R.id.action_sort_most_popular) {
+            mMovieAdapter.clearMovies();
+            loadMovies(popularSort);
+        }
+
+        if (menuItemId == R.id.action_sort_top_rated) {
+            mMovieAdapter.clearMovies();
+            loadMovies(topRatedSort);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
