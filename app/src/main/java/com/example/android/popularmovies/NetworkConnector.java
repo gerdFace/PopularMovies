@@ -18,14 +18,15 @@ import static android.content.ContentValues.TAG;
 
 public class NetworkConnector {
 
-    final static String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/popular";
-    final static String TMDB_KEY = "";
-    final static String QUERY_PARAM = "sort_by";
+    final static String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
+    final static String TMDB_KEY = "c7e6cb87a63c8cd9691cf319571b0581";
+    final static String QUERY_PARAM = "";
     final static String KEY = "api_key";
 
     public static URL buildMovieUrl (String sortByUserPreferences) {
-        Uri builtPopularMoviesUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-//                .appendQueryParameter(QUERY_PARAM, sortByUserPreferences)
+        String appendWithSortPreference = TMDB_BASE_URL + sortByUserPreferences;
+        Uri builtPopularMoviesUri = Uri.parse(appendWithSortPreference).buildUpon()
+//                .appendQueryParameter(QUERY_PARAM, appendWithSortPreference)
                 .appendQueryParameter(KEY, TMDB_KEY)
                 .build();
 
