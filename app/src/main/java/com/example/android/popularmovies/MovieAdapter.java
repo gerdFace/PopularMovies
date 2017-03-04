@@ -29,10 +29,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         this.context = context;
         mMovieClickHandler = clickHandler;
     }
-//
-//    public MovieAdapter(Context context) {
-//        this.context = context;
-//    }
 
     public void addMovies(ArrayList<Movie> movies) {
         movieList.addAll(movies);

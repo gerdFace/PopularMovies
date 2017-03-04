@@ -12,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private MovieAdapter mMovieAdapter;
     private String popularSort = "popular";
     private String topRatedSort = "top_rated";
+    private ProgressBar mLoadingProgressBar;
 
 
     @Override
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mLoadingProgressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         mMovieRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
         mMovieRecyclerView.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
@@ -56,6 +60,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
         @Override
+        protected void onPreExecute() {
+            mLoadingProgressBar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
+
+        @Override
         protected ArrayList<Movie> doInBackground(String... params) {
             if (params.length == 0) {
                 return null;
@@ -79,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         @Override
         protected void onPostExecute(ArrayList<Movie> results) {
+            mLoadingProgressBar.setVisibility(View.INVISIBLE);
             mMovieAdapter.addMovies(results);
         }
     }
