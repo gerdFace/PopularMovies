@@ -2,6 +2,7 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private String popularSort = "popular";
     private String topRatedSort = "top_rated";
     private ProgressBar mLoadingProgressBar;
+    private SharedPreferences lastUsedSortPreference;
+    private static final String PREF_NAME = "last_sort_setting";
+    private static final String PREF_KEY = "last_sort_string";
 
 
     @Override
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        lastUsedSortPreference = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         mLoadingProgressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         mMovieRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
         mMovieRecyclerView.setHasFixedSize(true);
@@ -40,11 +45,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mMovieRecyclerView.setLayoutManager(gridLayoutManager);
         mMovieAdapter = new MovieAdapter(this, this);
         mMovieRecyclerView.setAdapter(mMovieAdapter);
-        loadMovies(popularSort);
+        loadMovies(lastUsedSortPreference.getString(PREF_KEY, ""));
     }
 
     private void loadMovies(String sortPreference) {
-        String sortBy = sortPreference;
+        String sortBy;
+        if (sortPreference.isEmpty()) {
+            sortBy = popularSort;
+        } else {
+            sortBy = sortPreference;
+        }
         new FetchMoviesTask().execute(sortBy);
     }
 
@@ -52,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public void onClick(Movie selectedMovie) {
         Context context = this;
         Class movieDetailClassDestination = MovieDetailActivity.class;
-//        Bundle movieDetailBundle = new Bundle();
         Intent openMovieDetailActivity = new Intent(context, movieDetailClassDestination);
         openMovieDetailActivity.putExtra("movieDetail", selectedMovie);
         startActivity(openMovieDetailActivity);
@@ -104,15 +113,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuItemId = item.getItemId();
+        SharedPreferences.Editor sortEditor = lastUsedSortPreference.edit();
 
         if (menuItemId == R.id.action_sort_most_popular) {
             mMovieAdapter.clearMovies();
             loadMovies(popularSort);
-        }
+            sortEditor.putString(PREF_KEY, popularSort);
+            sortEditor.commit();        }
 
         if (menuItemId == R.id.action_sort_top_rated) {
             mMovieAdapter.clearMovies();
             loadMovies(topRatedSort);
+            sortEditor.putString(PREF_KEY, topRatedSort);
+            sortEditor.commit();
         }
         return super.onOptionsItemSelected(item);
     }
