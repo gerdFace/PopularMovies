@@ -3,8 +3,9 @@ package com.example.android.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,7 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-
+import android.widget.TextView;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private String topRatedSort = "top_rated";
     private ProgressBar mLoadingProgressBar;
     private SharedPreferences lastUsedSortPreference;
+    private TextView mNoInternetErrorMessage;
     private static final String PREF_NAME = "last_sort_setting";
     private static final String PREF_KEY = "last_sort_string";
 
@@ -39,23 +41,32 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         lastUsedSortPreference = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         mLoadingProgressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        mNoInternetErrorMessage = (TextView) findViewById(R.id.tv_no_internet_error_message);
         mMovieRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
         mMovieRecyclerView.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
         mMovieRecyclerView.setLayoutManager(gridLayoutManager);
         mMovieAdapter = new MovieAdapter(this, this);
         mMovieRecyclerView.setAdapter(mMovieAdapter);
+
         loadMovies(lastUsedSortPreference.getString(PREF_KEY, ""));
     }
 
     private void loadMovies(String sortPreference) {
         String sortBy;
+
         if (sortPreference.isEmpty()) {
             sortBy = popularSort;
         } else {
             sortBy = sortPreference;
         }
-        new FetchMoviesTask().execute(sortBy);
+
+        if (!checkIsOnline()) {
+            showErrorMessageView();
+        } else {
+            showMoviesView();
+            new FetchMoviesTask().execute(sortBy);
+        }
     }
 
     @Override
@@ -70,8 +81,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
         @Override
         protected void onPreExecute() {
-            mLoadingProgressBar.setVisibility(View.VISIBLE);
             super.onPreExecute();
+            mLoadingProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -119,14 +130,33 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             mMovieAdapter.clearMovies();
             loadMovies(popularSort);
             sortEditor.putString(PREF_KEY, popularSort);
-            sortEditor.commit();        }
+            sortEditor.apply();        }
 
         if (menuItemId == R.id.action_sort_top_rated) {
             mMovieAdapter.clearMovies();
             loadMovies(topRatedSort);
             sortEditor.putString(PREF_KEY, topRatedSort);
-            sortEditor.commit();
+            sortEditor.apply();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showMoviesView() {
+        mNoInternetErrorMessage.setVisibility(View.INVISIBLE);
+        mMovieRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    public void showErrorMessageView() {
+        mNoInternetErrorMessage.setVisibility(View.VISIBLE);
+        mMovieRecyclerView.setVisibility(View.INVISIBLE);
+    }
+
+    /*Connectivity check method from http://stackoverflow.com/questions/1560788/
+    how-to-check-internet-access-on-android-inetaddress-never-times-out?page=1&tab=votes#tab-top*/
+    public boolean checkIsOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

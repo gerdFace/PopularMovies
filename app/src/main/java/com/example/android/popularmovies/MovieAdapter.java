@@ -17,9 +17,8 @@ import java.util.ArrayList;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private final MovieAdapterOnClickHandler mMovieClickHandler;
-    private static final String TAG = MovieAdapter.class.getSimpleName();
-    ArrayList<Movie> movieList = new ArrayList<>();
-    Context context;
+    private ArrayList<Movie> movieList = new ArrayList<>();
+    private Context context;
 
     public interface MovieAdapterOnClickHandler {
         void onClick(Movie selectedMovie);
@@ -52,6 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         String moviePosterUrl = movieList.get(position).getPoster();
+//        Credit Picasso library by Square, http://square.github.io/picasso/
         Picasso.with(context).load(moviePosterUrl).into(holder.imageView);
     }
 

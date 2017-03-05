@@ -17,4 +17,14 @@
         android:layout_gravity="center"
         android:visibility="invisible" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_no_internet_error_message"
+        android:text="@string/no_internet_error_message"
+        android:textSize="20sp"
+        android:layout_marginTop="50dp"
+        android:padding="25dp"/>
+
+
 </FrameLayout>

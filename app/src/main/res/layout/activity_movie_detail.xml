@@ -9,6 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="com.example.android.popularmovies.MovieDetailActivity">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,30 +17,36 @@
         android:paddingTop="5dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="10dp">
+
                 <ImageView
                     android:layout_width="@dimen/poster_width"
                     android:layout_height="@dimen/poster_height"
                     android:id="@+id/iv_movie_poster" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:id="@+id/linearLayout">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_movie_title"
                         android:textSize="25sp"
                         android:gravity="center" />
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -47,6 +54,7 @@
                         android:textSize="20sp"
                         android:gravity="center"
                         android:layout_marginTop="5dp" />
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -54,20 +62,28 @@
                         android:textSize="15sp"
                         android:gravity="center"
                         android:layout_marginTop="3dp" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_horizontal">
+
                     </LinearLayout>
+
                 </LinearLayout>
+
             </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_movie_overview"
                 android:textStyle="bold|italic"
                 android:layout_marginTop="4dp" />
+
         </LinearLayout>
+
     </ScrollView>
+
 </LinearLayout>

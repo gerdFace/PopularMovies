@@ -2,7 +2,6 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -39,6 +38,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         mReleaseDate = (TextView) findViewById(R.id.tv_movie_release_date);
 
         mTitle.setText(movieTitle);
+//        Credit Picasso library by Square, http://square.github.io/picasso/
         Picasso.with(context).load(moviePoster).into(mPoster);
         mVoteAverage.setText(movieVoteAverage);
         mOverview.setText(movieOverview);
