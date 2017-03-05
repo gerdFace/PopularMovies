@@ -27,9 +27,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         Movie selectedMovie = intent.getParcelableExtra("movieDetail");
         String movieTitle = selectedMovie.getTitle();
         String moviePoster = selectedMovie.getPoster();
-        String movieVoteAverage = selectedMovie.getVoteAverage();
+        String movieVoteAverage = getString(R.string.average_rating) + selectedMovie.getVoteAverage() + getString(R.string.rating_total);
         String movieOverview = selectedMovie.getOverview();
-        String movieReleaseDate = selectedMovie.getReleaseDate();
+        String movieReleaseDate = selectedMovie.getReleaseDate().substring(0, 4);
         Context context = this;
 
         mTitle = (TextView) findViewById(R.id.tv_movie_title);

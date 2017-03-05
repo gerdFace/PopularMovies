@@ -4,4 +4,6 @@
     <string name="top_rated_value">top_rated</string>
     <string name="most_popular">Most Popular</string>
     <string name="most_popular_value">popular</string>
+    <string name="rating_total">\u0020 / 10</string>
+    <string name="average_rating">Rating: \u0020</string>
 </resources>
