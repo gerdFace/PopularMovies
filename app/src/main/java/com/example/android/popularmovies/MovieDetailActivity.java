@@ -40,7 +40,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         mTitle.setText(movieTitle);
 //        Credit Picasso library by Square, http://square.github.io/picasso/
         Picasso.with(context).load(moviePoster).into(mPoster);
-        mVoteAverage.setText(movieVoteAverage);
+        mVoteAverage.setText(getString(R.string.average_rating_text) + movieVoteAverage + getString(R.string.rating_total));
         mOverview.setText(movieOverview);
         mReleaseDate.setText(movieReleaseDate);
     }

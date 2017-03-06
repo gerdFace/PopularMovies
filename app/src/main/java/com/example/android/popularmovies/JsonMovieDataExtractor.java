@@ -36,7 +36,7 @@ public class JsonMovieDataExtractor {
             String poster = POSTER_BASE_PATH + POSTER_SIZE + movie.getString(POSTER_PATH);
             String voteAverage = movie.getString(VOTE_AVERAGE);
             String overview = movie.getString(OVERVIEW);
-            String releaseDate = movie.getString(RELEASE_DATE);
+            String releaseDate = movie.getString(RELEASE_DATE).substring(0, 4);
             Log.v(TAG, "Built Image URL " + poster);
             extractedMovieInfo.add(new Movie(title, poster, voteAverage, overview, releaseDate));
         }
