@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,48 +20,62 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import java.net.URL;
 import java.util.ArrayList;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    private RecyclerView mMovieRecyclerView;
-    private MovieAdapter mMovieAdapter;
-    private String popularSort = "popular";
-    private String topRatedSort = "top_rated";
-    private ProgressBar mLoadingProgressBar;
-    private SharedPreferences lastUsedSortPreference;
-    private TextView mNoInternetErrorMessage;
     private static final String PREF_NAME = "last_sort_setting";
     private static final String PREF_KEY = "last_sort_string";
+    public static final String TOP_RATED_SORT = "top_rated";
+    private static final String POPULAR_SORT = "popular";
 
+    @BindView(R.id.rv_movies)
+    RecyclerView mMovieRecyclerView;
+
+    @BindView(R.id.tv_no_internet_error_message)
+    TextView mNoInternetErrorMessage;
+
+    @BindView(R.id.pb_loading_indicator)
+    ProgressBar mLoadingProgressBar;
+
+    private MovieAdapter mMovieAdapter;
+    private SharedPreferences mLastUsedSortPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        lastUsedSortPreference = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        mLoadingProgressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-        mNoInternetErrorMessage = (TextView) findViewById(R.id.tv_no_internet_error_message);
-        mMovieRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
+        ButterKnife.bind(this);
+
+        mLastUsedSortPreference = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         mMovieRecyclerView.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
         mMovieRecyclerView.setLayoutManager(gridLayoutManager);
         mMovieAdapter = new MovieAdapter(this, this);
         mMovieRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovies(lastUsedSortPreference.getString(PREF_KEY, ""));
+        loadMovies(mLastUsedSortPreference.getString(PREF_KEY, ""));
     }
 
     private void loadMovies(String sortPreference) {
-        String sortBy;
+        fetchMovies(getSortOrder(sortPreference));
+    }
 
-        if (sortPreference.isEmpty()) {
-            sortBy = popularSort;
+    @NonNull
+    private String getSortOrder(String sortPreferenceString) {
+        String sortPreference;
+        if (sortPreferenceString.isEmpty()) {
+            sortPreference = POPULAR_SORT;
         } else {
-            sortBy = sortPreference;
+            sortPreference = sortPreferenceString;
         }
+        return sortPreference;
+    }
 
+    private void fetchMovies(String sortBy) {
         if (!checkIsOnline()) {
             showErrorMessageView();
         } else {
@@ -78,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         startActivity(openMovieDetailActivity);
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
+    private class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -87,20 +102,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         @Override
         protected ArrayList<Movie> doInBackground(String... params) {
+
             if (params.length == 0) {
                 return null;
             }
 
-            String param = params[0];
-            URL movieRequestUrl = NetworkConnector.buildMovieUrl(param);
+            String sortPreference = params[0];
+            NetworkConnector networkConnector = new NetworkConnector();
+            URL movieRequestUrl = networkConnector.buildMovieUrl(sortPreference);
 
             try {
-                String jsonMovieResponse = NetworkConnector.getResponseFromHttpUrl(movieRequestUrl);
+                String jsonMovieResponse = networkConnector.getResponseFromHttpUrl(movieRequestUrl);
 
-                ArrayList<Movie> extractedMovieInformation = JsonMovieDataExtractor
-                        .getExtractedMovieStringsFromJson(jsonMovieResponse);
+                return JsonMovieDataExtractor.getExtractedMovieStringsFromJson(jsonMovieResponse);
 
-                return extractedMovieInformation;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -124,18 +139,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuItemId = item.getItemId();
-        SharedPreferences.Editor sortEditor = lastUsedSortPreference.edit();
+        SharedPreferences.Editor sortEditor = mLastUsedSortPreference.edit();
 
         if (menuItemId == R.id.action_sort_most_popular) {
             mMovieAdapter.clearMovies();
-            loadMovies(popularSort);
-            sortEditor.putString(PREF_KEY, popularSort);
+            loadMovies(POPULAR_SORT);
+            sortEditor.putString(PREF_KEY, POPULAR_SORT);
             sortEditor.apply();        }
 
         if (menuItemId == R.id.action_sort_top_rated) {
             mMovieAdapter.clearMovies();
-            loadMovies(topRatedSort);
-            sortEditor.putString(PREF_KEY, topRatedSort);
+            loadMovies(TOP_RATED_SORT);
+            sortEditor.putString(PREF_KEY, TOP_RATED_SORT);
             sortEditor.apply();
         }
         return super.onOptionsItemSelected(item);

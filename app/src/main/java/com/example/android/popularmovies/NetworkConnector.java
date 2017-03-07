@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,15 +17,21 @@ import static android.content.ContentValues.TAG;
 
 public class NetworkConnector {
 
-    final static String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
-    final static String TMDB_KEY = "";
-    final static String KEY = "api_key";
+    public static final String ERROR_CANNOT_CONNECT_TO_THE_MOVIE_DATABASE = "Error: cannot connect to the movie database";
+    private final static String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
+    private final static String TMDB_KEY = "";
+    private final static String KEY = "api_key";
 
-    public static URL buildMovieUrl (String sortByUserPreferences) {
+    public URL buildMovieUrl(String sortByUserPreferences) {
         Uri builtPopularMoviesUri = Uri.parse(TMDB_BASE_URL + sortByUserPreferences).buildUpon()
                 .appendQueryParameter(KEY, TMDB_KEY)
                 .build();
 
+        return getMovieUrl(builtPopularMoviesUri);
+    }
+
+    @Nullable
+    private URL getMovieUrl(Uri builtPopularMoviesUri) {
         URL url = null;
         try {
             url = new URL(builtPopularMoviesUri.toString());
@@ -37,22 +44,17 @@ public class NetworkConnector {
     }
 
 
-    public static String getResponseFromHttpUrl (URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+    public static String getResponseFromHttpUrl(URL url) {
         try {
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = urlConnection.getInputStream();
 
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
-            }
-        } finally {
-            urlConnection.disconnect();
+            return scanner.next();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ERROR_CANNOT_CONNECT_TO_THE_MOVIE_DATABASE;
         }
     }
 }
