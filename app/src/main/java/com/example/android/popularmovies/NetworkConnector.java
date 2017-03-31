@@ -19,7 +19,7 @@ public class NetworkConnector {
 
     public static final String ERROR_CANNOT_CONNECT_TO_THE_MOVIE_DATABASE = "Error: cannot connect to the movie database";
     private final static String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
-    private final static String TMDB_KEY = "";
+    private final static String TMDB_KEY = "c7e6cb87a63c8cd9691cf319571b0581";
     private final static String KEY = "api_key";
 
     public URL buildMovieUrl(String sortByUserPreferences) {
@@ -30,13 +30,17 @@ public class NetworkConnector {
         return getMovieUrl(builtPopularMoviesUri);
     }
 
+    public URL buildReviewsUrl(String movieId) {
+
+    }
+
     @Nullable
     private URL getMovieUrl(Uri builtPopularMoviesUri) {
         URL url = null;
         try {
             url = new URL(builtPopularMoviesUri.toString());
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+        e.printStackTrace();
         }
 
         Log.v(TAG, "Built URI " + url);
