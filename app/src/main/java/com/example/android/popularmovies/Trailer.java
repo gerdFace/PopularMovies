@@ -7,20 +7,20 @@ import android.os.Parcelable;
  * Created by gerdface on 3/30/17.
  */
 
-public class Trailers implements Parcelable {
+public class Trailer implements Parcelable {
 
-    private String movieId;
+    private String videoId;
     private String trailerKey;
     private String trailerName;
 
-    public Trailers(String movieId, String trailerKey, String trailerName) {
-        this.movieId = movieId;
+    public Trailer(String videoId, String trailerKey, String trailerName) {
+        this.videoId = videoId;
         this.trailerKey = trailerKey;
         this.trailerName = trailerName;
     }
 
-    public String getMovieId() {
-        return movieId;
+    public String getVideoId() {
+        return videoId;
     }
 
     public String getTrailerKey() {
@@ -33,8 +33,8 @@ public class Trailers implements Parcelable {
 
     //    Parcelable Methods
 
-    private Trailers(Parcel origin) {
-        movieId = origin.readString();
+    private Trailer(Parcel origin) {
+        videoId = origin.readString();
         trailerKey = origin.readString();
         trailerName = origin.readString();
     }
@@ -46,20 +46,20 @@ public class Trailers implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.movieId);
+        dest.writeString(this.videoId);
         dest.writeString(this.trailerKey);
         dest.writeString(this.trailerName);
     }
 
-    public static final Parcelable.Creator<Trailers> CREATOR = new Parcelable.Creator<Trailers>() {
+    public static final Parcelable.Creator<Trailer> CREATOR = new Parcelable.Creator<Trailer>() {
         @Override
-        public Trailers createFromParcel(Parcel in) {
-            return new Trailers(in);
+        public Trailer createFromParcel(Parcel in) {
+            return new Trailer(in);
         }
 
         @Override
-        public Trailers[] newArray(int size) {
-            return new Trailers[size];
+        public Trailer[] newArray(int size) {
+            return new Trailer[size];
         }
     };
 }

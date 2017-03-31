@@ -7,13 +7,13 @@ import android.os.Parcelable;
  * Created by gerdface on 3/30/17.
  */
 
-public class Reviews implements Parcelable {
+public class Review implements Parcelable {
 
     private String movieId;
     private String reviewAuthor;
     private String reviewContent;
 
-    public Reviews(String movieId, String reviewAuthor, String reviewContent) {
+    public Review(String movieId, String reviewAuthor, String reviewContent) {
         this.movieId = movieId;
         this.reviewAuthor = reviewAuthor;
         this.reviewContent = reviewContent;
@@ -33,7 +33,7 @@ public class Reviews implements Parcelable {
 
 //    Parcelable Methods
 
-    private Reviews(Parcel origin) {
+    private Review(Parcel origin) {
         movieId = origin.readString();
         reviewAuthor = origin.readString();
         reviewContent = origin.readString();
@@ -51,15 +51,15 @@ public class Reviews implements Parcelable {
         dest.writeString(this.reviewContent);
     }
 
-    public static final Creator<Reviews> CREATOR = new Creator<Reviews>() {
+    public static final Creator<Review> CREATOR = new Creator<Review>() {
         @Override
-        public Reviews createFromParcel(Parcel in) {
-            return new Reviews(in);
+        public Review createFromParcel(Parcel in) {
+            return new Review(in);
         }
 
         @Override
-        public Reviews[] newArray(int size) {
-            return new Reviews[size];
+        public Review[] newArray(int size) {
+            return new Review[size];
         }
     };
 
