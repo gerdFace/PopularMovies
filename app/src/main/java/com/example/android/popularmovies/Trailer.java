@@ -9,18 +9,18 @@ import android.os.Parcelable;
 
 public class Trailer implements Parcelable {
 
-    private String videoId;
+    private String movieId;
     private String trailerKey;
     private String trailerName;
 
-    public Trailer(String videoId, String trailerKey, String trailerName) {
-        this.videoId = videoId;
+    public Trailer(String movieId, String trailerKey, String trailerName) {
+        this.movieId = movieId;
         this.trailerKey = trailerKey;
         this.trailerName = trailerName;
     }
 
-    public String getVideoId() {
-        return videoId;
+    public String getMovieId() {
+        return movieId;
     }
 
     public String getTrailerKey() {
@@ -34,7 +34,7 @@ public class Trailer implements Parcelable {
     //    Parcelable Methods
 
     private Trailer(Parcel origin) {
-        videoId = origin.readString();
+        movieId = origin.readString();
         trailerKey = origin.readString();
         trailerName = origin.readString();
     }
@@ -46,7 +46,7 @@ public class Trailer implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.videoId);
+        dest.writeString(this.movieId);
         dest.writeString(this.trailerKey);
         dest.writeString(this.trailerName);
     }

@@ -22,10 +22,7 @@ public class NetworkConnector {
     private final static String APPENDED_TRAILER_PATH = "videos";
     private final static String TMDB_KEY = "c7e6cb87a63c8cd9691cf319571b0581";
     private final static String KEY = "api_key";
-    private final static String QUERY_REVIEWS = "reviews";
-    private final static String REVIEWS = "search_reviews";
-    private final static String QUERY_TRAILERS = "videos";
-    private final static String VIDEOS = "search_videos";
+    private final static String APPENDED_REVIEW_PATH = "reviews";
 
 
     public URL buildMovieUrl(String sortByUserPreferences) {
@@ -37,15 +34,15 @@ public class NetworkConnector {
     }
 
     public URL buildReviewsUrl(String movieId) {
-        Uri builtReviewsUri = Uri.parse(TMDB_BASE_URL + movieId).buildUpon()
-                                 .appendQueryParameter(REVIEWS, QUERY_REVIEWS)
+        Uri builtReviewsUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                                 .appendPath(movieId)
+                                 .appendPath(APPENDED_REVIEW_PATH)
                                  .appendQueryParameter(KEY, TMDB_KEY)
                                  .build();
 
         return getMovieUrl(builtReviewsUri);
     }
 
-// TODO Network call returns empty string
     public URL buildTrailersUrl(String movieId) {
         Uri builtTrailerUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                                  .appendPath(movieId)

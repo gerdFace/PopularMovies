@@ -22,10 +22,10 @@ public class JsonMovieDataExtractor {
     private static final String RELEASE_DATE = "release_date";
     private static final String VOTE_AVERAGE = "vote_average";
     private static final String MOVIE_ID = "id";
-    private static final String TRAILER_ARRAY = "results";
-    private static final String VIDEO_ID = "id";
     private static final String VIDEO_KEY = "key";
     private static final String VIDEO_NAME = "name";
+    private static final String REVIEW_AUTHOR = "author";
+    private static final String REVIEW_CONTENT = "content";
 
     // TODO: Duplicate functionality inm getExtractedTrailerStringsFromJson
     public static ArrayList<Movie> getExtractedMovieStringsFromJson(String moviesJsonString) throws JSONException {
@@ -50,18 +50,34 @@ public class JsonMovieDataExtractor {
 
     public static ArrayList<Trailer> getExtractedTrailerStringsFromJson(String trailerJsonString) throws JSONException {
         JSONObject trailerJson = new JSONObject(trailerJsonString);
-        JSONArray trailerArray = trailerJson.getJSONArray(TRAILER_ARRAY);
+        JSONArray trailerArray = trailerJson.getJSONArray(MOVIE_ARRAY);
         int trailerArrayLength = trailerArray.length();
         ArrayList<Trailer> extractedTrailerInfo = new ArrayList<>();
 
         for (int i = 0; i < trailerArrayLength; i++) {
             JSONObject trailer = trailerArray.getJSONObject(i);
-            String videoId = trailer.getString(VIDEO_ID);
-            String videoKey = trailer.getString(VIDEO_KEY);
-            String movieId = trailer.getString(VIDEO_NAME);
-            extractedTrailerInfo.add(new Trailer(videoId, videoKey, movieId));
+            String movieId = trailer.getString(MOVIE_ID);
+            String trailerKey = trailer.getString(VIDEO_KEY);
+            String trailerName = trailer.getString(VIDEO_NAME);
+            extractedTrailerInfo.add(new Trailer(movieId, trailerKey, trailerName));
         }
         return extractedTrailerInfo;
+    }
+
+    public static ArrayList<Review> getExtractedReviewStringsFromJson(String reviewJsonString) throws JSONException {
+        JSONObject reviewJson = new JSONObject(reviewJsonString);
+        JSONArray reviewArray = reviewJson.getJSONArray(MOVIE_ARRAY);
+        int reviewArrayLength = reviewArray.length();
+        ArrayList<Review> extractedReviewInfo = new ArrayList<>();
+
+        for (int i = 0; i < reviewArrayLength; i++) {
+            JSONObject review = reviewArray.getJSONObject(i);
+            String movieId = review.getString(MOVIE_ID);
+            String reviewAuthor = review.getString(REVIEW_AUTHOR);
+            String reviewContent = review.getString(REVIEW_CONTENT);
+            extractedReviewInfo.add(new Review(movieId, reviewAuthor, reviewContent));
+        }
+        return extractedReviewInfo;
     }
 }
 

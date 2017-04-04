@@ -5,9 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
 /**
@@ -17,23 +17,20 @@ import java.util.ArrayList;
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {
 
     private ArrayList<Trailer> trailerList = new ArrayList<>();
-    private Context context;
     private final TrailerAdapterOnClickHandler trailerClickHandler;
 
     public interface TrailerAdapterOnClickHandler {
-        void onClick(Trailer selectedTrailer);
+        void onClick(Trailer selectedTrailer, int shareOrPlay);
     }
 
-    public TrailerAdapter(Context context, TrailerAdapterOnClickHandler handler) {
-        this.context = context;
-        this.trailerClickHandler = handler;
+    public TrailerAdapter(TrailerAdapterOnClickHandler handler) {
+        trailerClickHandler = handler;
     }
 
     public void addTrailers(ArrayList<Trailer> trailers) {
         trailerList.addAll(trailers);
         notifyDataSetChanged();
     }
-
 
     @Override
     public TrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -45,7 +42,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
     @Override
     public void onBindViewHolder(TrailerViewHolder holder, int position) {
-        holder.imageView.setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
+        holder.playImage.setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
+        holder.shareImage.setImageResource(R.drawable.ic_share_black_24dp);
         String trailerName = trailerList.get(position).getTrailerName();
         holder.textView.setText(trailerName);
     }
@@ -56,24 +54,47 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     }
 
 
-    class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView imageView;
+    class TrailerViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+        ImageView playImage;
+        ImageView shareImage;
         TextView textView;
+        TextView readReviews;
         Context context;
 
         public TrailerViewHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
-            imageView = (ImageView) itemView.findViewById(R.id.trailer_movie_image);
+            playImage = (ImageView) itemView.findViewById(R.id.trailer_play_image);
+            shareImage = (ImageView) itemView.findViewById(R.id.trailer_share_image);
             textView = (TextView) itemView.findViewById(R.id.trailer_movie_name);
-            itemView.setOnClickListener(this);
+            playImage.setOnClickListener(this);
+            shareImage.setOnClickListener(this);
+            textView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
+            int shareInt = 0;
+            int playInt = 1;
+            int readReviewsInt = 2;
             int trailerAdapterPositionOfTrailerSelected = getAdapterPosition();
             Trailer selectedTrailer = trailerList.get(trailerAdapterPositionOfTrailerSelected);
-            trailerClickHandler.onClick(selectedTrailer);
+
+            switch (v.getId()) {
+                case R.id.trailer_movie_name:
+                case R.id.trailer_play_image:
+                    trailerClickHandler.onClick(selectedTrailer, playInt);
+                    break;
+
+                case R.id.trailer_share_image:
+                    trailerClickHandler.onClick(selectedTrailer, shareInt);
+                    break;
+
+                case R.id.tv_read_reviews:
+                    trailerClickHandler.onClick(selectedTrailer, readReviewsInt);
+                default:
+                    break;
+            }
         }
     }
 }
