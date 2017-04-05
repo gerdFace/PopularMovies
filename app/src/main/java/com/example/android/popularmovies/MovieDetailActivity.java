@@ -20,8 +20,6 @@ import butterknife.ButterKnife;
 
 public class MovieDetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerAdapterOnClickHandler{
 
-    private final String TAG = MovieDetailActivity.class.getSimpleName();
-
     private TrailerAdapter trailerAdapter;
 
     @BindView(R.id.iv_movie_poster)
@@ -52,7 +50,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         String movieVoteAverage = selectedMovie.getVoteAverage();
         String movieOverview = selectedMovie.getOverview();
         String movieReleaseDate = selectedMovie.getReleaseDate();
-        String movieId = selectedMovie.getId();
+        final String movieId = selectedMovie.getId();
         Context context = this;
 
         mTvMovieTitle.setText(movieTitle);
@@ -68,6 +66,13 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         trailerAdapter = new TrailerAdapter(this);
         mTrailerRecyclerView.setAdapter(trailerAdapter);
         new FetchTrailersTask().execute(movieId);
+
+        mTvReadReviews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToReviewActivity(movieId);
+            }
+        });
     }
 
     @Override
@@ -77,8 +82,6 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         }
         if (shareOrPlay == 1) {
             playTrailer(selectedTrailer);
-        } else {
-            openReviewActivity(selectedTrailer.getMovieId());
         }
     }
 
@@ -119,11 +122,11 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         startActivity(shareTrailerIntent);
     }
 
-    private void openReviewActivity(String movieId) {
+    private void moveToReviewActivity(String movieId) {
         Context context = this;
         Class destinationClassReviewActivity = ReviewActivity.class;
         Intent openReviewActivity = new Intent(context, destinationClassReviewActivity);
-        openReviewActivity.putExtra("selected_trailer", movieId);
+        openReviewActivity.putExtra("selected_movie", movieId);
         startActivity(openReviewActivity);
     }
 

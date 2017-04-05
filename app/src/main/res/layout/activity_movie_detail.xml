@@ -58,13 +58,12 @@
                         android:gravity="center"
                         android:layout_marginTop="5dp" />
 
-                    <Button
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_read_reviews"
                         android:textSize="10sp"
                         android:text="@string/read_reviews"
-                        android:onClick="open"
                         android:gravity="center"
                         android:layout_marginTop="3dp" />
 

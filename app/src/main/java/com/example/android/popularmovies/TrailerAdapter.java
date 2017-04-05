@@ -45,7 +45,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         holder.playImage.setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
         holder.shareImage.setImageResource(R.drawable.ic_share_black_24dp);
         String trailerName = trailerList.get(position).getTrailerName();
-        holder.textView.setText(trailerName);
+        holder.movieName.setText(trailerName);
     }
 
     @Override
@@ -57,8 +57,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     class TrailerViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         ImageView playImage;
         ImageView shareImage;
-        TextView textView;
-        TextView readReviews;
+        TextView movieName;
         Context context;
 
         public TrailerViewHolder(View itemView) {
@@ -66,17 +65,16 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
             context = itemView.getContext();
             playImage = (ImageView) itemView.findViewById(R.id.trailer_play_image);
             shareImage = (ImageView) itemView.findViewById(R.id.trailer_share_image);
-            textView = (TextView) itemView.findViewById(R.id.trailer_movie_name);
+            movieName = (TextView) itemView.findViewById(R.id.trailer_movie_name);
             playImage.setOnClickListener(this);
             shareImage.setOnClickListener(this);
-            textView.setOnClickListener(this);
+            movieName.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int shareInt = 0;
             int playInt = 1;
-            int readReviewsInt = 2;
             int trailerAdapterPositionOfTrailerSelected = getAdapterPosition();
             Trailer selectedTrailer = trailerList.get(trailerAdapterPositionOfTrailerSelected);
 
@@ -90,8 +88,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
                     trailerClickHandler.onClick(selectedTrailer, shareInt);
                     break;
 
-                case R.id.tv_read_reviews:
-                    trailerClickHandler.onClick(selectedTrailer, readReviewsInt);
                 default:
                     break;
             }
