@@ -126,7 +126,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         Context context = this;
         Class destinationClassReviewActivity = ReviewActivity.class;
         Intent openReviewActivity = new Intent(context, destinationClassReviewActivity);
-        openReviewActivity.putExtra("selected_movie", movieId);
+        openReviewActivity.putExtra("selected_movie", movieId.toString());
         startActivity(openReviewActivity);
     }
 

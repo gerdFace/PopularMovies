@@ -62,7 +62,7 @@ public class NetworkConnector {
             e.printStackTrace();
         }
 
-        Log.v(TAG, "Built URI " + url);
+        Log.v(TAG, "Built URL " + url);
         return url;
     }
 

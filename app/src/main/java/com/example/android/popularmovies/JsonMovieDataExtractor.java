@@ -7,10 +7,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
-/**
- * Created by gerdface on 2/28/17.
- */
-
 public class JsonMovieDataExtractor {
 
     private static final String POSTER_BASE_PATH = "http://image.tmdb.org/t/p/";

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
 /**
@@ -17,8 +16,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     private ArrayList<Review> reviewList = new ArrayList<>();
 
+    public ReviewAdapter() {
+    //  Default Constructor
+    }
+
     public void addReviews(ArrayList<Review> reviews) {
-        this.reviewList = reviews;
+        reviewList.addAll(reviews);
         notifyDataSetChanged();
     }
 
@@ -40,16 +43,17 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     @Override
     public int getItemCount() {
-        return 0;
+        return reviewList.size();
     }
 
     class ReviewViewHolder extends RecyclerView.ViewHolder {
         TextView mReviewAuthor;
         TextView mReviewContent;
+        Context context;
 
         public ReviewViewHolder(View itemView) {
             super(itemView);
-            Context context = itemView.getContext();
+            context = itemView.getContext();
             mReviewAuthor = (TextView) itemView.findViewById(R.id.tv_review_author);
             mReviewContent = (TextView) itemView.findViewById(R.id.tv_review_content);
         }
