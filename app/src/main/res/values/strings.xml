@@ -4,10 +4,18 @@
     <string name="top_rated_value">top_rated</string>
     <string name="most_popular">Most Popular</string>
     <string name="most_popular_value">popular</string>
+    <string name="favorites">Favorites</string>
+    <string name="favorites_value">favorites</string>
     <string name="average_rating_text">Rating:\u0020</string>
+    <string name="read_reviews">(Read Reviews)</string>
     <string name="rating_total">/10</string>
     <string name="no_internet_error_message">Unable to connect to the internet. Please,
     check your connection.</string>
+    <string name="no_favorites_message">You don\'t have any favorite movies yet.</string>
+    <string name="content_authority">com.example.android.popularmovies</string>
+    <string name="favorite_added_toast">Added to Favorites</string>
+    <string name="favorite_removed_toast">Removed from Favorites</string>
+    <string name="failed_to_add_favorite_toast">Could not add movie to Favorites</string>
 </resources>
 
 

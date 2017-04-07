@@ -18,7 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MovieDetailActivity"></activity>
+        <activity android:name=".MovieDetailActivity" />
+        <activity android:name=".ReviewActivity"></activity>
+    <provider
+        android:name=".generated.FavoritesProvider"
+        android:authorities="@string/content_authority"
+        android:exported="false"/>
     </application>
+
 
 </manifest>
