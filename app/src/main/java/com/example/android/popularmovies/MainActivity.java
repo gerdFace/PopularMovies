@@ -3,6 +3,7 @@ package com.example.android.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -23,22 +24,25 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static java.security.AccessController.getContext;
+
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private static final String PREF_NAME = "last_sort_setting";
     private static final String PREF_KEY = "last_sort_string";
-    public static final String TOP_RATED_SORT = "top_rated";
+    private static final String TOP_RATED_SORT = "top_rated";
     private static final String POPULAR_SORT = "popular";
+    private static final String FAVORITE_SORT = "favorites";
 
     @BindView(R.id.rv_movies)
     RecyclerView mMovieRecyclerView;
 
-    @BindView(R.id.tv_no_internet_error_message)
-    TextView mNoInternetErrorMessage;
-
     @BindView(R.id.pb_loading_indicator)
     ProgressBar mLoadingProgressBar;
+
+    @BindView(R.id.error_message)
+    TextView mErrorMessage;
 
     private MovieAdapter mMovieAdapter;
     private SharedPreferences mLastUsedSortPreference;
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     private void loadMovies(String sortPreference) {
+        mLoadingProgressBar.setVisibility(View.VISIBLE);
         fetchMovies(getSortOrder(sortPreference));
     }
 
@@ -76,11 +81,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     private void fetchMovies(String sortBy) {
-        if (!checkIsOnline()) {
-            showErrorMessageView();
+        if (!checkIsOnline() && sortBy != FAVORITE_SORT) {
+            showNoInternetErrorMessageView();
         } else {
-            showMoviesView();
             new FetchMoviesTask().execute(sortBy);
+            showMoviesView();
         }
     }
 
@@ -97,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mLoadingProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -107,25 +111,61 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 return null;
             }
 
-            String sortPreference = params[0];
-            NetworkConnector networkConnector = new NetworkConnector();
-            URL movieRequestUrl = networkConnector.buildMovieUrl(sortPreference);
+            switch (params[0]) {
 
-            try {
-                String jsonMovieResponse = networkConnector.getResponseFromHttpUrl(movieRequestUrl);
+                case POPULAR_SORT:
+                case TOP_RATED_SORT:
+                    String sortPreference = params[0];
+                    NetworkConnector networkConnector = new NetworkConnector();
+                    URL movieRequestUrl = networkConnector.buildMovieUrl(sortPreference);
 
-                return JsonMovieDataExtractor.getExtractedMovieStringsFromJson(jsonMovieResponse);
+                    try {
+                        String jsonMovieResponse = networkConnector.getResponseFromHttpUrl(movieRequestUrl);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+                        return JsonMovieDataExtractor.getExtractedMovieStringsFromJson(jsonMovieResponse);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+
+                case FAVORITE_SORT:
+                    ArrayList<Movie> favoriteMovieList = new ArrayList<>();
+                    Cursor cursor = getApplication().getContentResolver()
+                            .query(FavoritesProvider.Favorites.CONTENT_URI, null, null, null, null);
+                    mMovieAdapter.clearMovies();
+                    if (cursor.getCount() > 0) {
+                        cursor.moveToFirst();
+                        while (cursor.moveToNext()) {
+                            Movie favoriteMovie = new Movie(
+                                    cursor.getString(cursor.getColumnIndex(FavoritesContract.MOVIE_TITLE)),
+                                    cursor.getString(cursor.getColumnIndex(FavoritesContract.POSTER_PATH)),
+                                    cursor.getString(cursor.getColumnIndex(FavoritesContract.USER_RATING)),
+                                    cursor.getString(cursor.getColumnIndex(FavoritesContract.OVERVIEW)),
+                                    cursor.getString(cursor.getColumnIndex(FavoritesContract.RELEASE_DATE)),
+                                    cursor.getString(cursor.getColumnIndex(FavoritesContract.MOVIE_ID))
+                            );
+                            favoriteMovieList.add(favoriteMovie);
+                        }
+                        return favoriteMovieList;
+                    } else {
+                        return null;
+                    }
+
+                default:
+                    return null;
             }
         }
 
         @Override
         protected void onPostExecute(ArrayList<Movie> results) {
             mLoadingProgressBar.setVisibility(View.INVISIBLE);
-            mMovieAdapter.addMovies(results);
+//    TODO Fix progressbar
+            if (results != null) {
+                mMovieAdapter.addMovies(results);
+            } else {
+                showNoFavoritesMessageView();
+            }
         }
     }
 
@@ -145,7 +185,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             mMovieAdapter.clearMovies();
             loadMovies(POPULAR_SORT);
             sortEditor.putString(PREF_KEY, POPULAR_SORT);
-            sortEditor.apply();        }
+            sortEditor.apply();
+        }
 
         if (menuItemId == R.id.action_sort_top_rated) {
             mMovieAdapter.clearMovies();
@@ -153,18 +194,35 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             sortEditor.putString(PREF_KEY, TOP_RATED_SORT);
             sortEditor.apply();
         }
+
+        if (menuItemId == R.id.action_sort_favorites) {
+            mMovieAdapter.clearMovies();
+            loadMovies(FAVORITE_SORT);
+            sortEditor.putString(PREF_KEY, FAVORITE_SORT);
+            sortEditor.apply();
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
     public void showMoviesView() {
-        mNoInternetErrorMessage.setVisibility(View.INVISIBLE);
+        mErrorMessage.setVisibility(View.INVISIBLE);
         mMovieRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    public void showErrorMessageView() {
-        mNoInternetErrorMessage.setVisibility(View.VISIBLE);
+    public void showNoInternetErrorMessageView() {
+        mErrorMessage.setText(getString(R.string.no_internet_error_message));
+        mErrorMessage.setVisibility(View.VISIBLE);
         mMovieRecyclerView.setVisibility(View.INVISIBLE);
     }
+
+    private void showNoFavoritesMessageView() {
+        mErrorMessage.setText(getString(R.string.no_favorites_message));
+        mErrorMessage.setVisibility(View.VISIBLE);
+        mMovieRecyclerView.setVisibility(View.INVISIBLE);
+    }
+
+
 
     /*Connectivity check method from http://stackoverflow.com/questions/1560788/
     how-to-check-internet-access-on-android-inetaddress-never-times-out?page=1&tab=votes#tab-top*/

@@ -36,7 +36,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     public void clearMovies() {
         movieList.clear();
-        notifyDataSetChanged();
     }
 
     @Override
