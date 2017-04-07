@@ -1,4 +1,4 @@
-package com.example.android.popularmovies;
+package com.example.android.popularmovies.network;
 
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -20,7 +20,7 @@ public class NetworkConnector {
     public static final String ERROR_CANNOT_CONNECT_TO_THE_MOVIE_DATABASE = "Error: cannot connect to the movie database";
     private final static String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
     private final static String APPENDED_TRAILER_PATH = "videos";
-    private final static String TMDB_KEY = "c7e6cb87a63c8cd9691cf319571b0581";
+    private final static String TMDB_KEY = "";
     private final static String KEY = "api_key";
     private final static String APPENDED_REVIEW_PATH = "reviews";
 

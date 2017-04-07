@@ -1,5 +1,8 @@
 package com.example.android.popularmovies;
 
+import com.example.android.popularmovies.data.JsonMovieDataExtractor;
+import com.example.android.popularmovies.model.Trailer;
+
 import org.junit.Test;
 
 import java.util.ArrayList;

@@ -1,5 +1,7 @@
 package com.example.android.popularmovies;
 
+import com.example.android.popularmovies.network.NetworkConnector;
+
 import java.net.URL;
 import org.junit.Test;
 

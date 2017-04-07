@@ -19,12 +19,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.android.popularmovies.adapter.MovieAdapter;
+import com.example.android.popularmovies.data.FavoritesContract;
+import com.example.android.popularmovies.data.FavoritesProvider;
+import com.example.android.popularmovies.data.JsonMovieDataExtractor;
+import com.example.android.popularmovies.model.Movie;
+import com.example.android.popularmovies.network.NetworkConnector;
+
 import java.net.URL;
 import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static java.security.AccessController.getContext;
 
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {

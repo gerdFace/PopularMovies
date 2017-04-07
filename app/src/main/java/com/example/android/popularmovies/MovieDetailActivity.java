@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +19,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.popularmovies.adapter.TrailerAdapter;
+import com.example.android.popularmovies.data.FavoritesContract;
+import com.example.android.popularmovies.data.FavoritesProvider;
+import com.example.android.popularmovies.data.JsonMovieDataExtractor;
+import com.example.android.popularmovies.model.Movie;
+import com.example.android.popularmovies.model.Trailer;
+import com.example.android.popularmovies.network.NetworkConnector;
 import com.squareup.picasso.Picasso;
 import java.net.URL;
 import java.util.ArrayList;
@@ -68,6 +77,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         String movieOverview = selectedMovie.getOverview();
         String movieReleaseDate = selectedMovie.getReleaseDate();
 
+        setFavoriteIcon(movieId);
         mTvMovieTitle.setText(movieTitle);
             //  Credit Picasso library by Square, http://square.github.io/picasso/
         Picasso.with(context).load(moviePoster).into(mIvMoviePoster);
@@ -80,10 +90,17 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         mTrailerRecyclerView.setLayoutManager(layoutManager);
         trailerAdapter = new TrailerAdapter(this);
         mTrailerRecyclerView.setAdapter(trailerAdapter);
-        new FetchTrailersTask().execute(movieId);
-        setFavoriteIcon(movieId);
         mTvReadReviews.setOnClickListener(this);
         mFavoriteIcon.setOnClickListener(this);
+        loadTrailers(movieId);
+    }
+
+    private void loadTrailers(String movieId) {
+        if (checkIsOnline()) {
+            new FetchTrailersTask().execute(movieId);
+        } else {
+            Log.v(TAG, "Can't load, no internet connection");
+        }
     }
 
     @Override
@@ -114,12 +131,12 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(FavoritesContract.MOVIE_ID, movieId);
                     contentValues.put(FavoritesContract.MOVIE_TITLE, selectedMovie.getTitle());
-                    contentValues.put(FavoritesContract.MOVIE_ID, selectedMovie.getOverview());
-                    contentValues.put(FavoritesContract.MOVIE_ID, selectedMovie.getPoster());
-                    contentValues.put(FavoritesContract.MOVIE_ID, selectedMovie.getReleaseDate());
-                    contentValues.put(FavoritesContract.MOVIE_ID, selectedMovie.getVoteAverage());
+                    contentValues.put(FavoritesContract.POSTER_PATH, selectedMovie.getPoster());
+                    contentValues.put(FavoritesContract.USER_RATING, selectedMovie.getVoteAverage());
+                    contentValues.put(FavoritesContract.OVERVIEW, selectedMovie.getOverview());
+                    contentValues.put(FavoritesContract.RELEASE_DATE, selectedMovie.getReleaseDate());
 
-                    Uri newFavoriteUri = this.getContentResolver().insert(FavoritesProvider
+                    Uri newFavoriteUri = getApplicationContext().getContentResolver().insert(FavoritesProvider
                             .Favorites.CONTENT_URI, contentValues);
 
                     if (!newFavoriteUri.equals(Uri.EMPTY)) {
@@ -231,7 +248,9 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
         @Override
         protected void onPostExecute(ArrayList<Trailer> results) {
-            trailerAdapter.addTrailers(results);
+            if (results != null) {
+                trailerAdapter.addTrailers(results);
+            }
         }
     }
 
@@ -240,16 +259,29 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                 .query(FavoritesProvider.Favorites.CONTENT_URI, new String[]{FavoritesContract.MOVIE_ID},
                         null, null, null);
 
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
+        if (cursor.moveToFirst()) {
             String cursorMovieId = cursor.getString(cursor.getColumnIndex(FavoritesContract.MOVIE_ID));
-            while (cursor.moveToNext()) {
-                if (movieId.equals(cursorMovieId)) {
-                    return true;
+            if (movieId.equals(cursorMovieId)) {
+                return true;
+            } else {
+                while (cursor.moveToNext()) {
+                    cursorMovieId = cursor.getString(cursor.getColumnIndex(FavoritesContract.MOVIE_ID));
+                    if (movieId.equals(cursorMovieId)) {
+                        return true;
+                    }
                 }
             }
         }
         cursor.close();
         return false;
+    }
+
+    /*Connectivity check method from http://stackoverflow.com/questions/1560788/
+how-to-check-internet-access-on-android-inetaddress-never-times-out?page=1&tab=votes#tab-top*/
+    public boolean checkIsOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

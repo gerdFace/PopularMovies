@@ -1,6 +1,11 @@
-package com.example.android.popularmovies;
+package com.example.android.popularmovies.data;
 
 import android.util.Log;
+
+import com.example.android.popularmovies.model.Movie;
+import com.example.android.popularmovies.model.Review;
+import com.example.android.popularmovies.model.Trailer;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -13,6 +13,11 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.adapter.ReviewAdapter;
+import com.example.android.popularmovies.data.JsonMovieDataExtractor;
+import com.example.android.popularmovies.model.Review;
+import com.example.android.popularmovies.network.NetworkConnector;
+
 import java.net.URL;
 import java.util.ArrayList;
 
