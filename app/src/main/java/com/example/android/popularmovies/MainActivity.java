@@ -137,11 +137,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
                 case FAVORITE_SORT:
                     ArrayList<Movie> favoriteMovieList = new ArrayList<>();
-                    Cursor cursor = getApplication().getContentResolver()
+                    Cursor cursor = getApplicationContext().getContentResolver()
                             .query(FavoritesProvider.Favorites.CONTENT_URI, null, null, null, null);
                     mMovieAdapter.clearMovies();
-                    if (cursor.getCount() > 0) {
-                        cursor.moveToFirst();
+                    if (cursor != null || cursor.getCount() > 0) {
                         while (cursor.moveToNext()) {
                             Movie favoriteMovie = new Movie(
                                     cursor.getString(cursor.getColumnIndex(FavoritesContract.MOVIE_TITLE)),
