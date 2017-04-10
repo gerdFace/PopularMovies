@@ -19,12 +19,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.example.android.popularmovies.adapter.MovieAdapter;
 import com.example.android.popularmovies.data.FavoritesContract;
 import com.example.android.popularmovies.data.FavoritesProvider;
 import com.example.android.popularmovies.data.JsonMovieDataExtractor;
 import com.example.android.popularmovies.model.Movie;
+import com.example.android.popularmovies.helper.Constants;
+import com.example.android.popularmovies.helper.HttpPathListCreator;
 import com.example.android.popularmovies.network.NetworkConnector;
 
 import java.net.URL;
@@ -34,12 +35,6 @@ import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
-
-    private static final String PREF_NAME = "last_sort_setting";
-    private static final String PREF_KEY = "last_sort_string";
-    private static final String TOP_RATED_SORT = "top_rated";
-    private static final String POPULAR_SORT = "popular";
-    private static final String FAVORITE_SORT = "favorites";
 
     @BindView(R.id.rv_movies)
     RecyclerView mMovieRecyclerView;
@@ -60,14 +55,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         ButterKnife.bind(this);
 
-        mLastUsedSortPreference = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        mLastUsedSortPreference = getSharedPreferences(Constants.PREF_NAME, MODE_PRIVATE);
         mMovieRecyclerView.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
         mMovieRecyclerView.setLayoutManager(gridLayoutManager);
         mMovieAdapter = new MovieAdapter(this, this);
         mMovieRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovies(mLastUsedSortPreference.getString(PREF_KEY, ""));
+        loadMovies(mLastUsedSortPreference.getString(Constants.PREF_KEY, ""));
     }
 
     private void loadMovies(String sortPreference) {
@@ -79,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private String getSortOrder(String sortPreferenceString) {
         String sortPreference;
         if (sortPreferenceString.isEmpty()) {
-            sortPreference = POPULAR_SORT;
+            sortPreference = Constants.POPULAR_SORT;
         } else {
             sortPreference = sortPreferenceString;
         }
@@ -87,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     private void fetchMovies(String sortBy) {
-        if (!checkIsOnline() && sortBy != FAVORITE_SORT) {
+        if (!checkIsOnline() && sortBy.equals(Constants.FAVORITE_SORT)) {
             showNoInternetErrorMessageView();
         } else {
             new FetchMoviesTask().execute(sortBy);
@@ -119,23 +114,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
             switch (params[0]) {
 
-                case POPULAR_SORT:
-                case TOP_RATED_SORT:
+                case Constants.POPULAR_SORT:
+                case Constants.TOP_RATED_SORT:
                     String sortPreference = params[0];
                     NetworkConnector networkConnector = new NetworkConnector();
-                    URL movieRequestUrl = networkConnector.buildMovieUrl(sortPreference);
+                    URL movieRequestUrl = networkConnector.buildUrl(new HttpPathListCreator().createListForHttpPath(Constants.MOVIES, sortPreference));
 
                     try {
                         String jsonMovieResponse = networkConnector.getResponseFromHttpUrl(movieRequestUrl);
 
-                        return JsonMovieDataExtractor.getExtractedMovieStringsFromJson(jsonMovieResponse);
+                        return new JsonMovieDataExtractor().getExtractedMovieStringsFromJson(jsonMovieResponse);
 
                     } catch (Exception e) {
                         e.printStackTrace();
                         return null;
                     }
 
-                case FAVORITE_SORT:
+                case Constants.FAVORITE_SORT:
                     ArrayList<Movie> favoriteMovieList = new ArrayList<>();
                     Cursor cursor = getApplication().getContentResolver()
                             .query(FavoritesProvider.Favorites.CONTENT_URI, null, null, null, null);
@@ -153,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                             );
                             favoriteMovieList.add(favoriteMovie);
                         }
+                        cursor.close();
                         return favoriteMovieList;
                     } else {
                         return null;
@@ -189,22 +185,22 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         if (menuItemId == R.id.action_sort_most_popular) {
             mMovieAdapter.clearMovies();
-            loadMovies(POPULAR_SORT);
-            sortEditor.putString(PREF_KEY, POPULAR_SORT);
+            loadMovies(Constants.POPULAR_SORT);
+            sortEditor.putString(Constants.PREF_KEY, Constants.POPULAR_SORT);
             sortEditor.apply();
         }
 
         if (menuItemId == R.id.action_sort_top_rated) {
             mMovieAdapter.clearMovies();
-            loadMovies(TOP_RATED_SORT);
-            sortEditor.putString(PREF_KEY, TOP_RATED_SORT);
+            loadMovies(Constants.TOP_RATED_SORT);
+            sortEditor.putString(Constants.PREF_KEY, Constants.TOP_RATED_SORT);
             sortEditor.apply();
         }
 
         if (menuItemId == R.id.action_sort_favorites) {
             mMovieAdapter.clearMovies();
-            loadMovies(FAVORITE_SORT);
-            sortEditor.putString(PREF_KEY, FAVORITE_SORT);
+            loadMovies(Constants.FAVORITE_SORT);
+            sortEditor.putString(Constants.PREF_KEY, Constants.FAVORITE_SORT);
             sortEditor.apply();
 
         }

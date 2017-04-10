@@ -3,6 +3,7 @@ package com.example.android.popularmovies.network;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import com.example.android.popularmovies.helper.Constants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -14,13 +15,6 @@ import static android.content.ContentValues.TAG;
 
 public class NetworkConnector {
 
-    public URL buildMovieUrl(String sortByUserPreferences) {
-        Uri builtPopularMoviesUri = Uri.parse(Constants.TMDB_BASE_URL + sortByUserPreferences).buildUpon()
-                                       .appendQueryParameter(Constants.KEY, Constants.TMDB_KEY)
-                                       .build();
-        return getMovieUrl(builtPopularMoviesUri);
-    }
-
     public URL buildUrl(ArrayList<String> appendPathParameters) {
         Uri.Builder builtTrailerUri = Uri.parse(Constants.TMDB_BASE_URL).buildUpon();
 
@@ -31,16 +25,6 @@ public class NetworkConnector {
         builtTrailerUri.appendQueryParameter(Constants.KEY, Constants.TMDB_KEY);
 
         return getMovieUrl(builtTrailerUri.build());
-    }
-
-    public URL buildReviewsUrl(String movieId) {
-        Uri builtReviewsUri = Uri.parse(Constants.TMDB_BASE_URL).buildUpon()
-                                 .appendPath(movieId)
-                                 .appendPath(Constants.REVIEWS)
-                                 .appendQueryParameter(Constants.KEY, Constants.TMDB_KEY)
-                                 .build();
-
-        return getMovieUrl(builtReviewsUri);
     }
 
     @Nullable
@@ -57,7 +41,7 @@ public class NetworkConnector {
     }
 
 
-    public static String getResponseFromHttpUrl(URL url) {
+    public String getResponseFromHttpUrl(URL url) {
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = urlConnection.getInputStream();

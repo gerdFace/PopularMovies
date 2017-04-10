@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.network;
+package com.example.android.popularmovies.helper;
 
 import java.util.ArrayList;
 

@@ -25,8 +25,8 @@ import com.example.android.popularmovies.data.FavoritesProvider;
 import com.example.android.popularmovies.data.JsonMovieDataExtractor;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.model.Trailer;
-import com.example.android.popularmovies.network.Constants;
-import com.example.android.popularmovies.network.HttpPathListCreator;
+import com.example.android.popularmovies.helper.Constants;
+import com.example.android.popularmovies.helper.HttpPathListCreator;
 import com.example.android.popularmovies.network.NetworkConnector;
 import com.squareup.picasso.Picasso;
 import java.net.URL;
@@ -240,7 +240,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
             try {
                 String jsonMovieResponse = networkConnector.getResponseFromHttpUrl(movieRequestUrl);
 
-                return JsonMovieDataExtractor.getExtractedTrailerStringsFromJson(jsonMovieResponse);
+                return new JsonMovieDataExtractor().getExtractedTrailerStringsFromJson(jsonMovieResponse);
 
             } catch (Exception e) {
                 e.printStackTrace();

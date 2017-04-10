@@ -27,7 +27,7 @@ public class JsonMovieDataExtractor {
     private static final String REVIEW_CONTENT = "content";
 
     // TODO: Duplicate functionality inm getExtractedTrailerStringsFromJson
-    public static ArrayList<Movie> getExtractedMovieStringsFromJson(String moviesJsonString) throws JSONException {
+    public ArrayList<Movie> getExtractedMovieStringsFromJson(String moviesJsonString) throws JSONException {
         JSONObject moviesJson = new JSONObject(moviesJsonString);
         JSONArray moviesArray = moviesJson.getJSONArray(MOVIE_ARRAY);
         int moviesArrayLength = moviesArray.length();
@@ -47,7 +47,7 @@ public class JsonMovieDataExtractor {
         return extractedMovieInfo;
     }
 
-    public static ArrayList<Trailer> getExtractedTrailerStringsFromJson(String trailerJsonString) throws JSONException {
+    public ArrayList<Trailer> getExtractedTrailerStringsFromJson(String trailerJsonString) throws JSONException {
         JSONObject trailerJson = new JSONObject(trailerJsonString);
         JSONArray trailerArray = trailerJson.getJSONArray(MOVIE_ARRAY);
         int trailerArrayLength = trailerArray.length();
@@ -63,7 +63,7 @@ public class JsonMovieDataExtractor {
         return extractedTrailerInfo;
     }
 
-    public static ArrayList<Review> getExtractedReviewStringsFromJson(String reviewJsonString) throws JSONException {
+    public ArrayList<Review> getExtractedReviewStringsFromJson(String reviewJsonString) throws JSONException {
         JSONObject reviewJson = new JSONObject(reviewJsonString);
         JSONArray reviewArray = reviewJson.getJSONArray(MOVIE_ARRAY);
         int reviewArrayLength = reviewArray.length();

@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.example.android.popularmovies.adapter.ReviewAdapter;
 import com.example.android.popularmovies.data.JsonMovieDataExtractor;
 import com.example.android.popularmovies.model.Review;
+import com.example.android.popularmovies.helper.Constants;
+import com.example.android.popularmovies.helper.HttpPathListCreator;
 import com.example.android.popularmovies.network.NetworkConnector;
 
 import java.net.URL;
@@ -81,12 +83,14 @@ public class ReviewActivity extends AppCompatActivity {
 
             String movieId = params[0];
             NetworkConnector networkConnector = new NetworkConnector();
-            URL reviewRequestUrl = networkConnector.buildReviewsUrl(movieId);
+            URL reviewRequestUrl = networkConnector.buildUrl(new HttpPathListCreator().createListForHttpPath(
+                    Constants.MOVIES, movieId, Constants.REVIEWS)
+            );
 
             try {
                 String jsonMovieResponse = networkConnector.getResponseFromHttpUrl(reviewRequestUrl);
 
-                return JsonMovieDataExtractor.getExtractedReviewStringsFromJson(jsonMovieResponse);
+                return new JsonMovieDataExtractor().getExtractedReviewStringsFromJson(jsonMovieResponse);
 
             } catch (Exception e) {
                 e.printStackTrace();
