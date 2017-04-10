@@ -8,49 +8,39 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 import static android.content.ContentValues.TAG;
 
-/**
- * Created by gerdface on 2/27/17.
- */
-
 public class NetworkConnector {
 
-    public static final String ERROR_CANNOT_CONNECT_TO_THE_MOVIE_DATABASE = "Error: cannot connect to the movie database";
-    private final static String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
-    private final static String APPENDED_TRAILER_PATH = "videos";
-    private final static String TMDB_KEY = "";
-    private final static String KEY = "api_key";
-    private final static String APPENDED_REVIEW_PATH = "reviews";
-
-
     public URL buildMovieUrl(String sortByUserPreferences) {
-        Uri builtPopularMoviesUri = Uri.parse(TMDB_BASE_URL + sortByUserPreferences).buildUpon()
-                                       .appendQueryParameter(KEY, TMDB_KEY)
+        Uri builtPopularMoviesUri = Uri.parse(Constants.TMDB_BASE_URL + sortByUserPreferences).buildUpon()
+                                       .appendQueryParameter(Constants.KEY, Constants.TMDB_KEY)
                                        .build();
-
         return getMovieUrl(builtPopularMoviesUri);
     }
 
+    public URL buildUrl(ArrayList<String> appendPathParameters) {
+        Uri.Builder builtTrailerUri = Uri.parse(Constants.TMDB_BASE_URL).buildUpon();
+
+        for (String entry : appendPathParameters) {
+            builtTrailerUri.appendPath(entry);
+        }
+
+        builtTrailerUri.appendQueryParameter(Constants.KEY, Constants.TMDB_KEY);
+
+        return getMovieUrl(builtTrailerUri.build());
+    }
+
     public URL buildReviewsUrl(String movieId) {
-        Uri builtReviewsUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+        Uri builtReviewsUri = Uri.parse(Constants.TMDB_BASE_URL).buildUpon()
                                  .appendPath(movieId)
-                                 .appendPath(APPENDED_REVIEW_PATH)
-                                 .appendQueryParameter(KEY, TMDB_KEY)
+                                 .appendPath(Constants.REVIEWS)
+                                 .appendQueryParameter(Constants.KEY, Constants.TMDB_KEY)
                                  .build();
 
         return getMovieUrl(builtReviewsUri);
-    }
-
-    public URL buildTrailersUrl(String movieId) {
-        Uri builtTrailerUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                                 .appendPath(movieId)
-                                 .appendPath(APPENDED_TRAILER_PATH)
-                                 .appendQueryParameter(KEY, TMDB_KEY)
-                                 .build();
-
-        return getMovieUrl(builtTrailerUri);
     }
 
     @Nullable
@@ -77,7 +67,7 @@ public class NetworkConnector {
             return scanner.next();
         } catch (IOException e) {
             e.printStackTrace();
-            return ERROR_CANNOT_CONNECT_TO_THE_MOVIE_DATABASE;
+            return Constants.ERROR_CANNOT_CONNECT_TO_THE_MOVIE_DATABASE;
         }
     }
 }

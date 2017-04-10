@@ -25,6 +25,8 @@ import com.example.android.popularmovies.data.FavoritesProvider;
 import com.example.android.popularmovies.data.JsonMovieDataExtractor;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.model.Trailer;
+import com.example.android.popularmovies.network.Constants;
+import com.example.android.popularmovies.network.HttpPathListCreator;
 import com.example.android.popularmovies.network.NetworkConnector;
 import com.squareup.picasso.Picasso;
 import java.net.URL;
@@ -92,12 +94,13 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         mTrailerRecyclerView.setAdapter(trailerAdapter);
         mTvReadReviews.setOnClickListener(this);
         mFavoriteIcon.setOnClickListener(this);
-        loadTrailers(movieId);
+
+        loadTrailers(new HttpPathListCreator().createListForHttpPath(Constants.MOVIES, movieId, Constants.TRAILERS));
     }
 
-    private void loadTrailers(String movieId) {
+    private void loadTrailers(ArrayList<String> trailerPath) {
         if (checkIsOnline()) {
-            new FetchTrailersTask().execute(movieId);
+            new FetchTrailersTask().execute(trailerPath);
         } else {
             Log.v(TAG, "Can't load, no internet connection");
         }
@@ -212,12 +215,12 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         Context context = this;
         Class destinationClassReviewActivity = ReviewActivity.class;
         Intent openReviewActivity = new Intent(context, destinationClassReviewActivity);
-        openReviewActivity.putExtra("selected_movie", movieId.toString());
+        openReviewActivity.putExtra("selected_movie", movieId);
         startActivity(openReviewActivity);
     }
 
 
-    private class FetchTrailersTask extends AsyncTask<String, Void, ArrayList<Trailer>> {
+    private class FetchTrailersTask extends AsyncTask<ArrayList<String>, Void, ArrayList<Trailer>> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -225,15 +228,14 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         }
 
         @Override
-        protected ArrayList<Trailer> doInBackground(String... params) {
+        protected ArrayList<Trailer> doInBackground(ArrayList<String>... trailerPath) {
 
-            if (params.length == 0) {
+            if (trailerPath.length == 0) {
                 return null;
             }
 
-            String movieId = params[0];
             NetworkConnector networkConnector = new NetworkConnector();
-            URL movieRequestUrl = networkConnector.buildTrailersUrl(movieId);
+            URL movieRequestUrl = networkConnector.buildUrl(trailerPath[0]);
 
             try {
                 String jsonMovieResponse = networkConnector.getResponseFromHttpUrl(movieRequestUrl);
