@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -18,7 +19,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.example.android.popularmovies.databinding.ActivityMovieDetailBinding;
 import com.example.android.popularmovies.adapter.TrailerAdapter;
 import com.example.android.popularmovies.data.FavoritesContract;
 import com.example.android.popularmovies.data.FavoritesProvider;
@@ -66,7 +67,9 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_detail);
+
+        ActivityMovieDetailBinding mMovieDetailBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie_detail);
+
         ButterKnife.bind(this);
 
         Context context = this;
@@ -86,11 +89,12 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         mTvMovieAverageRating.setText(getString(R.string.average_rating_text) + movieVoteAverage + getString(R.string.rating_total));
         mTvMovieOverview.setText(movieOverview);
         mTvMovieReleaseDate.setText(movieReleaseDate);
+        setTitle(selectedMovie.getTitle());
 
         mTrailerRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mTrailerRecyclerView.setLayoutManager(layoutManager);
-        trailerAdapter = new TrailerAdapter(this);
+        trailerAdapter = new TrailerAdapter(this, this);
         mTrailerRecyclerView.setAdapter(trailerAdapter);
         mTvReadReviews.setOnClickListener(this);
         mFavoriteIcon.setOnClickListener(this);

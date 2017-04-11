@@ -2,6 +2,7 @@ package com.example.android.popularmovies.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,20 +12,26 @@ import android.widget.TextView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Trailer;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {
 
     private ArrayList<Trailer> trailerList = new ArrayList<>();
     private final TrailerAdapterOnClickHandler trailerClickHandler;
+    private Context mContext;
+
 
     public interface TrailerAdapterOnClickHandler {
         void onClick(Trailer selectedTrailer, int shareOrPlay);
     }
 
-    public TrailerAdapter(TrailerAdapterOnClickHandler handler) {
+    public TrailerAdapter(Context context, TrailerAdapterOnClickHandler handler) {
+        mContext = context;
         trailerClickHandler = handler;
     }
 
@@ -43,8 +50,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
     @Override
     public void onBindViewHolder(TrailerViewHolder holder, int position) {
-        holder.playImage.setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
-        holder.shareImage.setImageResource(R.drawable.ic_share_black_24dp);
+        String trailerThumbnailUrl = "http://img.youtube.com/vi/" + trailerList.get(position).getTrailerKey() + "/0.jpg";
+        Log.v(TAG, "Built Trailer Image URL " + trailerThumbnailUrl);
+        Picasso.with(mContext).load(trailerThumbnailUrl).into(holder.mTrailerThumbnail);
+        holder.shareImage.setImageResource(R.drawable.ic_share_black_15dp);
         String trailerName = trailerList.get(position).getTrailerName();
         holder.movieName.setText(trailerName);
     }
@@ -56,7 +65,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
 
     class TrailerViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
-        ImageView playImage;
+        ImageView mTrailerThumbnail;
         ImageView shareImage;
         TextView movieName;
         Context context;
@@ -64,10 +73,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         public TrailerViewHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
-            playImage = (ImageView) itemView.findViewById(R.id.trailer_play_image);
+            mTrailerThumbnail = (ImageView) itemView.findViewById(R.id.trailer_video_image);
             shareImage = (ImageView) itemView.findViewById(R.id.trailer_share_image);
             movieName = (TextView) itemView.findViewById(R.id.trailer_movie_name);
-            playImage.setOnClickListener(this);
+            mTrailerThumbnail.setOnClickListener(this);
             shareImage.setOnClickListener(this);
             movieName.setOnClickListener(this);
         }
@@ -81,7 +90,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
             switch (v.getId()) {
                 case R.id.trailer_movie_name:
-                case R.id.trailer_play_image:
+                case R.id.trailer_video_image:
                     trailerClickHandler.onClick(selectedTrailer, playInt);
                     break;
 

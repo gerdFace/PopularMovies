@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private MovieAdapter mMovieAdapter;
     private SharedPreferences mLastUsedSortPreference;
+    private boolean mUseThreeColumnGrid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +56,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         ButterKnife.bind(this);
 
+        mUseThreeColumnGrid = getResources().getBoolean(R.bool.display_three_column_grid);
+
         mLastUsedSortPreference = getSharedPreferences(Constants.PREF_NAME, MODE_PRIVATE);
         mMovieRecyclerView.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, checkOrientation(mUseThreeColumnGrid), LinearLayoutManager.VERTICAL, false);
         mMovieRecyclerView.setLayoutManager(gridLayoutManager);
         mMovieAdapter = new MovieAdapter(this, this);
         mMovieRecyclerView.setAdapter(mMovieAdapter);
@@ -68,6 +71,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private void loadMovies(String sortPreference) {
         mLoadingProgressBar.setVisibility(View.VISIBLE);
         fetchMovies(getSortOrder(sortPreference));
+    }
+
+    private int checkOrientation(boolean shouldDisplayThreeColumns) {
+        int portrait = 2;
+        int landscape = 3;
+
+        if (shouldDisplayThreeColumns) {
+            return landscape;
+        } else {
+            return portrait;
+        }
     }
 
     @NonNull
