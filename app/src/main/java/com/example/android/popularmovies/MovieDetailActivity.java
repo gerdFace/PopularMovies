@@ -64,6 +64,9 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
     @BindView(R.id.favorite_icon)
     ImageView mFavoriteIcon;
 
+    @BindView(R.id.backdrop_image)
+    ImageView mBackdropImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +81,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         String movieId = selectedMovie.getId();
         String movieTitle = selectedMovie.getTitle();
         String moviePoster = selectedMovie.getPoster();
+        String movieBackdrop = selectedMovie.getBackdrop();
         String movieVoteAverage = selectedMovie.getVoteAverage();
         String movieOverview = selectedMovie.getOverview();
         String movieReleaseDate = selectedMovie.getReleaseDate();
@@ -90,6 +94,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         mTvMovieOverview.setText(movieOverview);
         mTvMovieReleaseDate.setText(movieReleaseDate);
         setTitle(selectedMovie.getTitle());
+        Picasso.with(this).load(movieBackdrop).into(mBackdropImage);
 
         mTrailerRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);

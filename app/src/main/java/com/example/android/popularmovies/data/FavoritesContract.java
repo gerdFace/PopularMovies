@@ -19,6 +19,9 @@ public class FavoritesContract {
     public static final String POSTER_PATH = "poster_path";
 
     @DataType(DataType.Type.TEXT) @NotNull
+    public static final String BACKDROP_PATH = "backdrop_path";
+
+    @DataType(DataType.Type.TEXT) @NotNull
     public static final String USER_RATING = "user_rating";
 
     @DataType(DataType.Type.TEXT) @NotNull

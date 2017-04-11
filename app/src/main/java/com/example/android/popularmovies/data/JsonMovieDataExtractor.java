@@ -14,6 +14,8 @@ public class JsonMovieDataExtractor {
 
     private static final String POSTER_BASE_PATH = "http://image.tmdb.org/t/p/";
     private static final String POSTER_SIZE = "w500";
+    private static final String BACKDROP_SIZE = "original";
+    private static final String BACKDROP_PATH = "backdrop_path";
     private static final String MOVIE_ARRAY = "results";
     private static final String MOVIE_TITLE = "original_title";
     private static final String POSTER_PATH = "poster_path";
@@ -37,12 +39,14 @@ public class JsonMovieDataExtractor {
             JSONObject movie = moviesArray.getJSONObject(i);
             String title = movie.getString(MOVIE_TITLE);
             String poster = POSTER_BASE_PATH + POSTER_SIZE + movie.getString(POSTER_PATH);
+            String backdrop = POSTER_BASE_PATH + BACKDROP_SIZE + movie.getString(BACKDROP_PATH);
             String voteAverage = movie.getString(VOTE_AVERAGE);
             String overview = movie.getString(OVERVIEW);
             String releaseDate = movie.getString(RELEASE_DATE).substring(0, 4);
             String movieId = movie.getString(MOVIE_ID);
             Log.v(TAG, "Built Image URL " + poster);
-            extractedMovieInfo.add(new Movie(title, poster, voteAverage, overview, releaseDate, movieId));
+            Log.v(TAG, "Built Backdrop URL " + backdrop);
+            extractedMovieInfo.add(new Movie(title, poster, backdrop, voteAverage, overview, releaseDate, movieId));
         }
         return extractedMovieInfo;
     }

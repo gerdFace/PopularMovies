@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private MovieAdapter mMovieAdapter;
     private SharedPreferences mLastUsedSortPreference;
-    private boolean mUseThreeColumnGrid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         ButterKnife.bind(this);
 
-        mUseThreeColumnGrid = getResources().getBoolean(R.bool.display_three_column_grid);
+        boolean mUseThreeColumnGrid = getResources().getBoolean(R.bool.display_three_column_grid);
 
         mLastUsedSortPreference = getSharedPreferences(Constants.PREF_NAME, MODE_PRIVATE);
         mMovieRecyclerView.setHasFixedSize(true);
@@ -155,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                             Movie favoriteMovie = new Movie(
                                     cursor.getString(cursor.getColumnIndex(FavoritesContract.MOVIE_TITLE)),
                                     cursor.getString(cursor.getColumnIndex(FavoritesContract.POSTER_PATH)),
+                                    cursor.getString(cursor.getColumnIndex(FavoritesContract.BACKDROP_PATH)),
                                     cursor.getString(cursor.getColumnIndex(FavoritesContract.USER_RATING)),
                                     cursor.getString(cursor.getColumnIndex(FavoritesContract.OVERVIEW)),
                                     cursor.getString(cursor.getColumnIndex(FavoritesContract.RELEASE_DATE)),

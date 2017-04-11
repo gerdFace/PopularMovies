@@ -8,10 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/poster_padding"
-    android:paddingRight="@dimen/poster_padding"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/colorPrimaryLight"
+    android:background="@color/black"
     android:orientation="vertical" >
 
         <LinearLayout
@@ -19,15 +16,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/backdrop_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:background="@color/goldDark" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/goldDark"
+                    android:orientation="horizontal" >
 
                 <ImageView
-                    android:layout_width="@dimen/poster_width"
-                    android:layout_height="@dimen/poster_height"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:id="@+id/iv_movie_poster" />
 
                 <LinearLayout
@@ -70,6 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_movie_overview"
+                android:textColor="@color/white"
                 android:text="Some movie where someone, played by someone you know, does something crazy. Action and love scenes abound. Everything works
                 out in the end. Blaaahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
                 Blahhhh blahhhhhhhhhhhh."

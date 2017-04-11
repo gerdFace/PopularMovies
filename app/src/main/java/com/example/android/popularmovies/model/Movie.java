@@ -13,14 +13,18 @@ import static android.content.ContentValues.TAG;
 public class Movie implements Parcelable {
     private String title;
     private String poster;
+    private String backdrop;
     private String voteAverage;
     private String overview;
     private String releaseDate;
     private String id;
 
-    public Movie(String title, String poster, String voteAverage, String overview, String releaseDate, String id) {
+
+    public Movie(String title, String poster, String backdrop, String voteAverage, String overview, String releaseDate, String id) {
         this.title = title;
         this.poster = poster;
+        this.backdrop = backdrop;
+
         Log.v(TAG, "Added poster URL " + poster + " to movies");
         this.voteAverage = voteAverage;
         this.overview = overview;
@@ -34,6 +38,10 @@ public class Movie implements Parcelable {
 
     public String getPoster() {
         return poster;
+    }
+
+    public String getBackdrop() {
+        return backdrop;
     }
 
     public String getVoteAverage() {
@@ -56,6 +64,7 @@ public class Movie implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(poster);
+        dest.writeString(backdrop);
         dest.writeString(voteAverage);
         dest.writeString(overview);
         dest.writeString(releaseDate);
@@ -70,6 +79,7 @@ public class Movie implements Parcelable {
     private Movie(Parcel origin) {
         title = origin.readString();
         poster = origin.readString();
+        backdrop = origin.readString();
         voteAverage = origin.readString();
         overview = origin.readString();
         releaseDate = origin.readString();
