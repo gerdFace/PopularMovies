@@ -1,6 +1,5 @@
 package com.example.android.popularmovies;
 
-import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
@@ -11,13 +10,17 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.android.popularmovies.adapter.ReviewAdapter;
 import com.example.android.popularmovies.adapter.TrailerAdapter;
 import com.example.android.popularmovies.data.JsonMovieDataExtractor;
 import com.example.android.popularmovies.helper.TestInternetConnectivity;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.model.MovieDetailViewModel;
+import com.example.android.popularmovies.model.Review;
 import com.example.android.popularmovies.model.Trailer;
 import com.example.android.popularmovies.helper.Constants;
 import com.example.android.popularmovies.helper.HttpPathListCreator;
@@ -32,9 +35,25 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
     private static final String TAG = MovieDetailActivity.class.getSimpleName();
     private TrailerAdapter trailerAdapter;
+    private ReviewAdapter reviewAdapter;
 
-//    @BindView(R.id.iv_movie_poster)
-//    ImageView mIvMoviePoster;
+    @BindView(R.id.overview_header)
+    TextView mOverviewHeader;
+
+    @BindView(R.id.trailer_header)
+    TextView mTrailerHeader;
+
+    @BindView(R.id.review_header)
+    TextView mReviewHeader;
+
+    @BindView(R.id.pb_loading_indicator)
+    ProgressBar mLoadingProgressBar;
+
+    @BindView(R.id.tv_no_internet_error_message)
+    TextView mNoInternetErrorMessage;
+
+    @BindView(R.id.rv_reviews)
+    RecyclerView mReviewRecyclerView;
 
     @BindView(R.id.tv_movie_title)
     TextView mTvMovieTitle;
@@ -104,7 +123,20 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         mTvReadReviews.setOnClickListener(this);
         mFavoriteIcon.setOnClickListener(this);
 
+
+        reviewAdapter = new ReviewAdapter();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mReviewRecyclerView.setHasFixedSize(true);
+        mReviewRecyclerView.setLayoutManager(linearLayoutManager);
+        mReviewRecyclerView.setAdapter(reviewAdapter);
+
         loadTrailers(new HttpPathListCreator().createListForHttpPath(Constants.MOVIES, movieId, Constants.TRAILERS));
+        fetchMovies(movieId);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle out) {
+        out.putParcelable();
     }
 
     private void loadTrailers(ArrayList<String> trailerPath) {
@@ -127,15 +159,19 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                 break;
 
             case R.id.favorite_icon:
+                boolean isFavorite = false;
                 if (movieDetailViewModel.isMovieInFavoritesList(movieId)) {
-                    setFavoriteIcon(movieDetailViewModel.deleteMovieFromFavorites());
+                    movieDetailViewModel.deleteMovieFromFavorites();
+                    isFavorite = false;
                     Toast.makeText(this, getResources().getString(R.string.favorite_removed_toast),
                                    Toast.LENGTH_SHORT).show();
-                } else {
-                    setFavoriteIcon(movieDetailViewModel.addMovieToFavorites());
+                } else if (!movieDetailViewModel.isMovieInFavoritesList(movieId)){
+                    movieDetailViewModel.addMovieToFavorites();
+                    isFavorite = true;
                     Toast.makeText(this, getResources().getString(R.string.favorite_added_toast),
                                    Toast.LENGTH_SHORT).show();
                 }
+                setFavoriteIcon(isFavorite);
                 break;
         }
     }
@@ -191,5 +227,63 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                 trailerAdapter.addTrailers(results);
             }
         }
+    }
+
+
+    private void fetchMovies(String movieId) {
+        if (!TestInternetConnectivity.isDeviceOnline(this)) {
+            showErrorMessageView();
+        } else {
+            new FetchReviewTask().execute(movieId);
+        }
+    }
+
+    private class FetchReviewTask extends AsyncTask<String, Void, ArrayList<Review>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected ArrayList<Review> doInBackground(String... params) {
+
+            if (params.length == 0) {
+                return null;
+            }
+
+            String movieId = params[0];
+            NetworkConnector networkConnector = new NetworkConnector();
+            URL reviewRequestUrl = networkConnector.buildUrl(new HttpPathListCreator().createListForHttpPath(
+                    Constants.MOVIES, movieId, Constants.REVIEWS)
+            );
+
+            try {
+                String jsonMovieResponse = networkConnector.getResponseFromHttpUrl(reviewRequestUrl);
+
+                return new JsonMovieDataExtractor().getExtractedReviewStringsFromJson(jsonMovieResponse);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Review> results) {
+            mLoadingProgressBar.setVisibility(View.INVISIBLE);
+            reviewAdapter.addReviews(results);
+            showMoviesView();
+        }
+    }
+
+    public void showMoviesView() {
+        mNoInternetErrorMessage.setVisibility(View.INVISIBLE);
+        mReviewRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    public void showErrorMessageView() {
+        mNoInternetErrorMessage.setVisibility(View.VISIBLE);
+        mReviewRecyclerView.setVisibility(View.INVISIBLE);
     }
 }

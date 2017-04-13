@@ -90,21 +90,19 @@ public class MovieDetailViewModel {
         return false;
     }
 
-    public boolean deleteMovieFromFavorites() {
+    public void deleteMovieFromFavorites() {
         int deletedRows = context.getContentResolver().delete(FavoritesProvider.Favorites
                   .CONTENT_URI,
                   FavoritesContract.MOVIE_ID + "=?",
                   new String[] {selectedMovie.getId()});
         if (deletedRows > 0) {
             Log.v(TAG, "Number rows removed: " + deletedRows);
-            return true;
         } else {
             Log.v(TAG, "Failed to delete number rows: " + deletedRows);
-            return false;
         }
     }
 
-    public boolean addMovieToFavorites() {
+    public void addMovieToFavorites() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(FavoritesContract.MOVIE_ID, selectedMovie.getId());
         contentValues.put(FavoritesContract.MOVIE_TITLE, selectedMovie.getTitle());
@@ -118,7 +116,6 @@ public class MovieDetailViewModel {
 
         if (!newFavoriteUri.equals(Uri.EMPTY)) {
             Log.v(TAG, "Uri added at: " + newFavoriteUri.toString());
-            return true;
         } else {
             throw new android.database.SQLException("Failed to insert at URI: " + newFavoriteUri);
         }

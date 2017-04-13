@@ -21,7 +21,7 @@ public class JsonMovieDataExtractorTest {
         Trailer expectedTrailer = new Trailer("550", "SUXWAEX2jlg", "Trailer 1");
 
         // Act
-        ArrayList<Trailer> actualTrailerList = JsonMovieDataExtractor.getExtractedTrailerStringsFromJson(trailerJsonResponse);
+        ArrayList<Trailer> actualTrailerList = new JsonMovieDataExtractor().getExtractedTrailerStringsFromJson(trailerJsonResponse);
 
         // Assert
         assertEquals(expectedTrailerList.size(), actualTrailerList.size());

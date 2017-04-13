@@ -5,7 +5,6 @@
     android:background="@color/goldLight"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <TextView
         android:id="@+id/trailer_movie_name"
         android:layout_width="wrap_content"
@@ -17,7 +16,8 @@
         android:padding="5dp"
         app:layout_constraintLeft_toRightOf="@+id/trailer_video_image"
         app:layout_constraintTop_toTopOf="@+id/trailer_video_image"
-        app:layout_constraintBottom_toBottomOf="@+id/trailer_video_image" />
+        app:layout_constraintBottom_toBottomOf="@+id/trailer_video_image"
+        app:layout_constraintRight_toLeftOf="@+id/trailer_share_image"/>
 
     <ImageView
         android:id="@+id/trailer_video_image"
@@ -35,9 +35,9 @@
         android:padding="5dp"
         android:src="@drawable/ic_play_arrow_white_18px"
         app:layout_constraintTop_toTopOf="@id/trailer_video_image"
-        app:layout_constraintBottom_toBottomOf="@id/trailer_video_image"
-        app:layout_constraintLeft_toLeftOf="@id/trailer_video_image"
-        app:layout_constraintRight_toRightOf="@id/trailer_video_image" />
+        app:layout_constraintBottom_toBottomOf="@+id/trailer_video_image"
+        app:layout_constraintLeft_toLeftOf="@+id/trailer_video_image"
+        app:layout_constraintRight_toRightOf="@+id/trailer_video_image" />
 
     <ImageView
         android:id="@+id/trailer_share_image"
@@ -47,13 +47,7 @@
         android:src="@drawable/ic_share_black_15dp"
         app:layout_constraintLeft_toRightOf="@+id/trailer_movie_name"
         app:layout_constraintTop_toTopOf="@+id/trailer_movie_name"
-        app:layout_constraintBottom_toBottomOf="@+id/trailer_movie_name"/>
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5"/>
+        app:layout_constraintBottom_toBottomOf="@+id/trailer_movie_name"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>
