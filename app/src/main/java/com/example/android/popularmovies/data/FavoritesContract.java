@@ -12,6 +12,9 @@ public class FavoritesContract {
     @AutoIncrement
     public static final String _ID = "_id";
 
+    @DataType(DataType.Type.TEXT) @NotNull @Unique
+    public static final String MOVIE_ID = "movie_id";
+
     @DataType(DataType.Type.TEXT) @NotNull
     public static final String MOVIE_TITLE = "movie_title";
 
@@ -30,6 +33,4 @@ public class FavoritesContract {
     @DataType(DataType.Type.TEXT) @NotNull
     public static final String RELEASE_DATE = "release_date";
 
-    @DataType(DataType.Type.TEXT) @NotNull @Unique
-    public static final String MOVIE_ID = "movie_id";
 }

@@ -70,13 +70,10 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
         ButterKnife.bind(this);
 
-//        Context context = this;
-
         Intent intent = getIntent();
         Movie selectedMovie = intent.getParcelableExtra("movieDetail");
         String movieId = selectedMovie.getId();
         String movieTitle = selectedMovie.getTitle();
-//        String moviePoster = selectedMovie.getPoster();
         String movieBackdrop = selectedMovie.getBackdrop();
         String movieVoteAverage = selectedMovie.getVoteAverage();
         String movieOverview = selectedMovie.getOverview();
@@ -131,11 +128,11 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
             case R.id.favorite_icon:
                 if (movieDetailViewModel.isMovieInFavoritesList(movieId)) {
-                    setFavoriteIcon(movieDetailViewModel.deleteMovieFromFavorites(movieId));
+                    setFavoriteIcon(movieDetailViewModel.deleteMovieFromFavorites());
                     Toast.makeText(this, getResources().getString(R.string.favorite_removed_toast),
                                    Toast.LENGTH_SHORT).show();
                 } else {
-                    setFavoriteIcon(movieDetailViewModel.addMovieToFavorites(movieId));
+                    setFavoriteIcon(movieDetailViewModel.addMovieToFavorites());
                     Toast.makeText(this, getResources().getString(R.string.favorite_added_toast),
                                    Toast.LENGTH_SHORT).show();
                 }
@@ -155,9 +152,9 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
     private void setFavoriteIcon(boolean isFavoriteMovie) {
         if (isFavoriteMovie) {
-            mFavoriteIcon.setImageResource(R.drawable.ic_favorite_black_24dp);
+            mFavoriteIcon.setImageResource(R.drawable.ic_favorite_black_48dp);
         } else {
-            mFavoriteIcon.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            mFavoriteIcon.setImageResource(R.drawable.ic_favorite_border_black_48dp);
         }
     }
 

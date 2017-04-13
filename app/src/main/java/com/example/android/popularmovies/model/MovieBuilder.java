@@ -2,15 +2,20 @@ package com.example.android.popularmovies.model;
 
 public class MovieBuilder {
 
+    private String id;
     private String title;
     private String poster;
     private String backdrop;
     private String voteAverage;
     private String overview;
     private String releaseDate;
-    private String id;
 
     public MovieBuilder() {
+    }
+
+    public MovieBuilder withId(String id) {
+        this.id = id;
+        return this;
     }
 
     public MovieBuilder withTitle(String title) {
@@ -40,11 +45,6 @@ public class MovieBuilder {
 
     public MovieBuilder withReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
-        return this;
-    }
-
-    public MovieBuilder withId(String id) {
-        this.id = id;
         return this;
     }
 

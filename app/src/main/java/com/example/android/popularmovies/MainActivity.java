@@ -147,16 +147,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                             .query(FavoritesProvider.Favorites.CONTENT_URI, null, null, null, null);
                     mMovieAdapter.clearMovies();
                     if (cursor.getCount() > 0) {
-                        cursor.moveToFirst();
+
                         while (cursor.moveToNext()) {
                             Movie favoriteMovie = new Movie(
+                                    cursor.getString(cursor.getColumnIndex(FavoritesContract.MOVIE_ID)),
                                     cursor.getString(cursor.getColumnIndex(FavoritesContract.MOVIE_TITLE)),
                                     cursor.getString(cursor.getColumnIndex(FavoritesContract.POSTER_PATH)),
                                     cursor.getString(cursor.getColumnIndex(FavoritesContract.BACKDROP_PATH)),
                                     cursor.getString(cursor.getColumnIndex(FavoritesContract.USER_RATING)),
                                     cursor.getString(cursor.getColumnIndex(FavoritesContract.OVERVIEW)),
-                                    cursor.getString(cursor.getColumnIndex(FavoritesContract.RELEASE_DATE)),
-                                    cursor.getString(cursor.getColumnIndex(FavoritesContract.MOVIE_ID))
+                                    cursor.getString(cursor.getColumnIndex(FavoritesContract.RELEASE_DATE))
                             );
                             favoriteMovieList.add(favoriteMovie);
                         }

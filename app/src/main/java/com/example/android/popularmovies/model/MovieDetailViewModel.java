@@ -90,11 +90,11 @@ public class MovieDetailViewModel {
         return false;
     }
 
-    public boolean deleteMovieFromFavorites(String movieId) {
+    public boolean deleteMovieFromFavorites() {
         int deletedRows = context.getContentResolver().delete(FavoritesProvider.Favorites
                   .CONTENT_URI,
                   FavoritesContract.MOVIE_ID + "=?",
-                  new String[] {movieId});
+                  new String[] {selectedMovie.getId()});
         if (deletedRows > 0) {
             Log.v(TAG, "Number rows removed: " + deletedRows);
             return true;
@@ -104,18 +104,17 @@ public class MovieDetailViewModel {
         }
     }
 
-    public boolean addMovieToFavorites(String movieId) {
+    public boolean addMovieToFavorites() {
         ContentValues contentValues = new ContentValues();
+        contentValues.put(FavoritesContract.MOVIE_ID, selectedMovie.getId());
         contentValues.put(FavoritesContract.MOVIE_TITLE, selectedMovie.getTitle());
         contentValues.put(FavoritesContract.POSTER_PATH, selectedMovie.getPoster());
-        contentValues.put(FavoritesContract.POSTER_PATH, selectedMovie.getBackdrop());
+        contentValues.put(FavoritesContract.BACKDROP_PATH, selectedMovie.getBackdrop());
         contentValues.put(FavoritesContract.USER_RATING, selectedMovie.getVoteAverage());
         contentValues.put(FavoritesContract.OVERVIEW, selectedMovie.getOverview());
         contentValues.put(FavoritesContract.RELEASE_DATE, selectedMovie.getReleaseDate());
-        contentValues.put(FavoritesContract.MOVIE_ID, movieId);
 
-        Uri newFavoriteUri = context.getContentResolver().insert(FavoritesProvider
-                                                                                         .Favorites.CONTENT_URI, contentValues);
+        Uri newFavoriteUri = context.getContentResolver().insert(FavoritesProvider.Favorites.CONTENT_URI, contentValues);
 
         if (!newFavoriteUri.equals(Uri.EMPTY)) {
             Log.v(TAG, "Uri added at: " + newFavoriteUri.toString());

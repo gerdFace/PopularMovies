@@ -37,16 +37,16 @@ public class JsonMovieDataExtractor {
 
         for (int i = 0; i < moviesArrayLength; i++) {
             JSONObject movie = moviesArray.getJSONObject(i);
+            String movieId = movie.getString(MOVIE_ID);
             String title = movie.getString(MOVIE_TITLE);
             String poster = POSTER_BASE_PATH + POSTER_SIZE + movie.getString(POSTER_PATH);
             String backdrop = POSTER_BASE_PATH + BACKDROP_SIZE + movie.getString(BACKDROP_PATH);
             String voteAverage = movie.getString(VOTE_AVERAGE);
             String overview = movie.getString(OVERVIEW);
             String releaseDate = movie.getString(RELEASE_DATE).substring(0, 4);
-            String movieId = movie.getString(MOVIE_ID);
             Log.v(TAG, "Built Image URL " + poster);
             Log.v(TAG, "Built Backdrop URL " + backdrop);
-            extractedMovieInfo.add(new Movie(title, poster, backdrop, voteAverage, overview, releaseDate, movieId));
+            extractedMovieInfo.add(new Movie(movieId, title, poster, backdrop, voteAverage, overview, releaseDate));
         }
         return extractedMovieInfo;
     }
