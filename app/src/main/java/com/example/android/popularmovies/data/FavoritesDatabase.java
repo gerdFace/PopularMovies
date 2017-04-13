@@ -10,7 +10,7 @@ public final class FavoritesDatabase {
     private FavoritesDatabase() {
     }
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 3;
 
     @Table(FavoritesContract.class)
     public static final String FAVORITES = "favorites";

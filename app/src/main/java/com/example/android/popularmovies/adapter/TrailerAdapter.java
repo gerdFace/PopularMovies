@@ -27,7 +27,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
 
     public interface TrailerAdapterOnClickHandler {
-        void onClick(Trailer selectedTrailer, int shareOrPlay);
+        void onPlayTrailerClicked(Trailer selectedTrailer);
+        void onShareTrailerClicked(Trailer selectedTrailer);
     }
 
     public TrailerAdapter(Context context, TrailerAdapterOnClickHandler handler) {
@@ -83,19 +84,17 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
         @Override
         public void onClick(View v) {
-            int shareInt = 0;
-            int playInt = 1;
             int trailerAdapterPositionOfTrailerSelected = getAdapterPosition();
             Trailer selectedTrailer = trailerList.get(trailerAdapterPositionOfTrailerSelected);
 
             switch (v.getId()) {
                 case R.id.trailer_movie_name:
                 case R.id.trailer_video_image:
-                    trailerClickHandler.onClick(selectedTrailer, playInt);
+                    trailerClickHandler.onPlayTrailerClicked(selectedTrailer);
                     break;
 
                 case R.id.trailer_share_image:
-                    trailerClickHandler.onClick(selectedTrailer, shareInt);
+                    trailerClickHandler.onShareTrailerClicked(selectedTrailer);
                     break;
 
                 default:

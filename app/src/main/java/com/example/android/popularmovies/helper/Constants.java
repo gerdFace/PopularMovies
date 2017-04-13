@@ -14,4 +14,5 @@ public class Constants {
     public static final String TOP_RATED_SORT = "top_rated";
     public static final String POPULAR_SORT = "popular";
     public static final String FAVORITE_SORT = "favorites";
+    public static final String NO_INTERNET = "no_internet";
 }
