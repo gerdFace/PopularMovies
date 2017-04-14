@@ -15,4 +15,7 @@ public class Constants {
     public static final String POPULAR_SORT = "popular";
     public static final String FAVORITE_SORT = "favorites";
     public static final String NO_INTERNET = "no_internet";
+    public static final String MAIN_FRAGMENT_BUNDLE_ID = "main_fragment_bundle_id";
+    public static final String MAIN_FRAGMENT_TAG = "main_fragment_tag";
+    public static final String SELECTED_MOVIE_TAG = "selected_movie";
 }

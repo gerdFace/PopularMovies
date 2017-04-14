@@ -1,6 +1,5 @@
 package com.example.android.popularmovies.model;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-import com.example.android.popularmovies.ReviewActivity;
 import com.example.android.popularmovies.data.FavoritesContract;
 import com.example.android.popularmovies.data.FavoritesProvider;
 import static android.content.ContentValues.TAG;
@@ -46,14 +44,6 @@ public class MovieDetailViewModel {
                 .putExtra(Intent.EXTRA_TEXT, youtubeUri);
         context.startActivity(shareTrailerIntent);
     }
-
-    public void moveToReviewActivity(String movieId) {
-        Class destinationClassReviewActivity = ReviewActivity.class;
-        Intent openReviewActivity = new Intent(context, destinationClassReviewActivity);
-        openReviewActivity.putExtra("selected_movie", movieId);
-        context.startActivity(openReviewActivity);
-    }
-
 
     private boolean checkIfYouTubeAppIsInstalled() {
         String youTubePackage = "com.google.android.youtube";
@@ -113,7 +103,6 @@ public class MovieDetailViewModel {
         contentValues.put(FavoritesContract.RELEASE_DATE, selectedMovie.getReleaseDate());
 
         Uri newFavoriteUri = context.getContentResolver().insert(FavoritesProvider.Favorites.CONTENT_URI, contentValues);
-
         if (!newFavoriteUri.equals(Uri.EMPTY)) {
             Log.v(TAG, "Uri added at: " + newFavoriteUri.toString());
         } else {

@@ -44,6 +44,8 @@ public class NetworkConnector {
     public String getResponseFromHttpUrl(URL url) {
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(5000);
+            urlConnection.setReadTimeout(1000);
             InputStream in = urlConnection.getInputStream();
 
             Scanner scanner = new Scanner(in);

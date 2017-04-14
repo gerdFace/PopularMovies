@@ -18,8 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MovieDetailActivity" />
-        <activity android:name=".ReviewActivity"></activity>
+        <activity android:name=".MovieDetailActivity"
+            android:title="@string/detail_activity_title">
+        </activity>
     <provider
         android:name=".data.generated.FavoritesProvider"
         android:authorities="@string/content_authority"
