@@ -1,6 +1,5 @@
 package com.example.android.popularmovies.data;
 
-
 import net.simonvt.schematic.annotation.Database;
 import net.simonvt.schematic.annotation.Table;
 

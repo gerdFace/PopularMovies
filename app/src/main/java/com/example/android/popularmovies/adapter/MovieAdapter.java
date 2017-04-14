@@ -8,6 +8,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.popularmovies.MainFragment;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.R;
 import com.squareup.picasso.Picasso;
@@ -19,17 +20,11 @@ import java.util.ArrayList;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-    private final MovieAdapterOnClickHandler mMovieClickHandler;
     private ArrayList<Movie> movieList = new ArrayList<>();
     private Context context;
 
-    public interface MovieAdapterOnClickHandler {
-        void onClick(Movie selectedMovie);
-    }
-
-    public MovieAdapter(Context context, MovieAdapterOnClickHandler clickHandler) {
+    public MovieAdapter(Context context) {
         this.context = context;
-        mMovieClickHandler = clickHandler;
     }
 
     public void addMovies(ArrayList<Movie> movies) {
@@ -62,13 +57,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return movieList.size();
     }
 
-    class MovieViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        MainFragment.MovieAdapterOnClickHandler movieAdapterOnClickHandler;
         ImageView imageView;
         Context context;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
+            movieAdapterOnClickHandler = (MainFragment.MovieAdapterOnClickHandler) context;
             imageView = (ImageView) itemView.findViewById(R.id.iv_list_item_movie_poster);
             itemView.setOnClickListener(this);
         }
@@ -77,7 +74,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public void onClick(View v) {
             int movieAdapterPositionOfMovieSelected = getAdapterPosition();
             Movie selectedMovie = movieList.get(movieAdapterPositionOfMovieSelected);
-            mMovieClickHandler.onClick(selectedMovie);
+            movieAdapterOnClickHandler.onClick(selectedMovie);
         }
     }
 }

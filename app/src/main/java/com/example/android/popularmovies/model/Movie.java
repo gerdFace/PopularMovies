@@ -11,21 +11,29 @@ import static android.content.ContentValues.TAG;
  */
 
 public class Movie implements Parcelable {
+    private String id;
     private String title;
     private String poster;
+    private String backdrop;
     private String voteAverage;
     private String overview;
     private String releaseDate;
-    private String id;
 
-    public Movie(String title, String poster, String voteAverage, String overview, String releaseDate, String id) {
+
+    public Movie(String id, String title, String poster, String backdrop, String voteAverage, String overview, String releaseDate) {
+        this.id = id;
         this.title = title;
         this.poster = poster;
         Log.v(TAG, "Added poster URL " + poster + " to movies");
+        this.backdrop = backdrop;
+        Log.v(TAG, "Added backdrop URL " + backdrop + " to movies");
         this.voteAverage = voteAverage;
         this.overview = overview;
         this.releaseDate = releaseDate;
-        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -34,6 +42,10 @@ public class Movie implements Parcelable {
 
     public String getPoster() {
         return poster;
+    }
+
+    public String getBackdrop() {
+        return backdrop;
     }
 
     public String getVoteAverage() {
@@ -48,18 +60,16 @@ public class Movie implements Parcelable {
         return releaseDate;
     }
 
-    public String getId() {
-        return id;
-    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(poster);
+        dest.writeString(backdrop);
         dest.writeString(voteAverage);
         dest.writeString(overview);
         dest.writeString(releaseDate);
-        dest.writeString(id);
     }
 
     @Override
@@ -68,12 +78,13 @@ public class Movie implements Parcelable {
     }
 
     private Movie(Parcel origin) {
+        id = origin.readString();
         title = origin.readString();
         poster = origin.readString();
+        backdrop = origin.readString();
         voteAverage = origin.readString();
         overview = origin.readString();
         releaseDate = origin.readString();
-        id = origin.readString();
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {

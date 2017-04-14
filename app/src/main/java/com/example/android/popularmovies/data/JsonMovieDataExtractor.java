@@ -1,11 +1,9 @@
 package com.example.android.popularmovies.data;
 
 import android.util.Log;
-
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.model.Review;
 import com.example.android.popularmovies.model.Trailer;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,6 +14,8 @@ public class JsonMovieDataExtractor {
 
     private static final String POSTER_BASE_PATH = "http://image.tmdb.org/t/p/";
     private static final String POSTER_SIZE = "w500";
+    private static final String BACKDROP_SIZE = "original";
+    private static final String BACKDROP_PATH = "backdrop_path";
     private static final String MOVIE_ARRAY = "results";
     private static final String MOVIE_TITLE = "original_title";
     private static final String POSTER_PATH = "poster_path";
@@ -29,7 +29,7 @@ public class JsonMovieDataExtractor {
     private static final String REVIEW_CONTENT = "content";
 
     // TODO: Duplicate functionality inm getExtractedTrailerStringsFromJson
-    public static ArrayList<Movie> getExtractedMovieStringsFromJson(String moviesJsonString) throws JSONException {
+    public ArrayList<Movie> getExtractedMovieStringsFromJson(String moviesJsonString) throws JSONException {
         JSONObject moviesJson = new JSONObject(moviesJsonString);
         JSONArray moviesArray = moviesJson.getJSONArray(MOVIE_ARRAY);
         int moviesArrayLength = moviesArray.length();
@@ -37,19 +37,21 @@ public class JsonMovieDataExtractor {
 
         for (int i = 0; i < moviesArrayLength; i++) {
             JSONObject movie = moviesArray.getJSONObject(i);
+            String movieId = movie.getString(MOVIE_ID);
             String title = movie.getString(MOVIE_TITLE);
             String poster = POSTER_BASE_PATH + POSTER_SIZE + movie.getString(POSTER_PATH);
+            String backdrop = POSTER_BASE_PATH + BACKDROP_SIZE + movie.getString(BACKDROP_PATH);
             String voteAverage = movie.getString(VOTE_AVERAGE);
             String overview = movie.getString(OVERVIEW);
             String releaseDate = movie.getString(RELEASE_DATE).substring(0, 4);
-            String movieId = movie.getString(MOVIE_ID);
             Log.v(TAG, "Built Image URL " + poster);
-            extractedMovieInfo.add(new Movie(title, poster, voteAverage, overview, releaseDate, movieId));
+            Log.v(TAG, "Built Backdrop URL " + backdrop);
+            extractedMovieInfo.add(new Movie(movieId, title, poster, backdrop, voteAverage, overview, releaseDate));
         }
         return extractedMovieInfo;
     }
 
-    public static ArrayList<Trailer> getExtractedTrailerStringsFromJson(String trailerJsonString) throws JSONException {
+    public ArrayList<Trailer> getExtractedTrailerStringsFromJson(String trailerJsonString) throws JSONException {
         JSONObject trailerJson = new JSONObject(trailerJsonString);
         JSONArray trailerArray = trailerJson.getJSONArray(MOVIE_ARRAY);
         int trailerArrayLength = trailerArray.length();
@@ -65,7 +67,7 @@ public class JsonMovieDataExtractor {
         return extractedTrailerInfo;
     }
 
-    public static ArrayList<Review> getExtractedReviewStringsFromJson(String reviewJsonString) throws JSONException {
+    public ArrayList<Review> getExtractedReviewStringsFromJson(String reviewJsonString) throws JSONException {
         JSONObject reviewJson = new JSONObject(reviewJsonString);
         JSONArray reviewArray = reviewJson.getJSONArray(MOVIE_ARRAY);
         int reviewArrayLength = reviewArray.length();
