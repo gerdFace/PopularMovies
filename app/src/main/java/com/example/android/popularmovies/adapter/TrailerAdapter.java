@@ -54,7 +54,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         String trailerThumbnailUrl = "http://img.youtube.com/vi/" + trailerList.get(position).getTrailerKey() + "/0.jpg";
         Log.v(TAG, "Built Trailer Image URL " + trailerThumbnailUrl);
         Picasso.with(mContext).load(trailerThumbnailUrl).into(holder.mTrailerThumbnail);
-        holder.shareImage.setImageResource(R.drawable.ic_share_black_15dp);
+        holder.shareImage.setImageResource(R.drawable.ic_share_black_20dp);
         String trailerName = trailerList.get(position).getTrailerName();
         holder.movieName.setText(trailerName);
     }

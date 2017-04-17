@@ -5,10 +5,8 @@ import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import com.example.android.popularmovies.helper.Constants;
 import com.example.android.popularmovies.model.Movie;
-import static com.example.android.popularmovies.helper.Constants.MAIN_FRAGMENT_BUNDLE_ID;
-import static com.example.android.popularmovies.helper.Constants.MAIN_FRAGMENT_TAG;
-import static com.example.android.popularmovies.helper.Constants.SELECTED_MOVIE_TAG;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.MovieAdapterOnClickHandler {
 
@@ -26,11 +24,11 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
 
         if (savedInstanceState != null) {
             mMainFragment = (MainFragment) getSupportFragmentManager().getFragment(savedInstanceState,
-                                                                                   MAIN_FRAGMENT_BUNDLE_ID);
+                                                                                   Constants.MAIN_FRAGMENT_ID);
         } else {
             mMainFragment = new MainFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_container, mMainFragment,
-                                                                   MAIN_FRAGMENT_TAG).commit();
+                                                                   Constants.MAIN_FRAGMENT_TAG).commit();
         }
     }
 
@@ -38,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
     public void onClick(Movie selectedMovie) {
         if (mTwoPane) {
             Bundle bundle = new Bundle();
-            bundle.putParcelable(SELECTED_MOVIE_TAG, selectedMovie);
+            bundle.putParcelable(Constants.SELECTED_MOVIE_TAG, selectedMovie);
             MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
             movieDetailFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().replace(R.id.detail_container,
@@ -47,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
             Context context = this;
             Class movieDetailClassDestination = MovieDetailActivity.class;
             Intent openMovieDetailActivity = new Intent(context, movieDetailClassDestination);
-            openMovieDetailActivity.putExtra(SELECTED_MOVIE_TAG, selectedMovie);
+            openMovieDetailActivity.putExtra(Constants.SELECTED_MOVIE_TAG, selectedMovie);
             startActivity(openMovieDetailActivity);
         }
     }
@@ -55,12 +53,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, MAIN_FRAGMENT_BUNDLE_ID, mMainFragment);
+        getSupportFragmentManager().putFragment(outState, Constants.MAIN_FRAGMENT_ID, mMainFragment);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
-        getSupportFragmentManager().putFragment(outState, MAIN_FRAGMENT_BUNDLE_ID, mMainFragment);
+        getSupportFragmentManager().putFragment(outState, Constants.MAIN_FRAGMENT_ID, mMainFragment);
     }
 }

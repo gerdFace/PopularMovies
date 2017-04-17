@@ -6,15 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Review;
-
 import java.util.ArrayList;
-
-/**
- * Created by gerdface on 4/5/17.
- */
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 

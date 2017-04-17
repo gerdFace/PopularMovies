@@ -3,12 +3,7 @@ package com.example.android.popularmovies.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
-
 import static android.content.ContentValues.TAG;
-
-/**
- * Created by gerdface on 2/28/17.
- */
 
 public class Movie implements Parcelable {
     private String id;

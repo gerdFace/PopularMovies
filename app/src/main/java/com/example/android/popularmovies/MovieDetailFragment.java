@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import static com.example.android.popularmovies.helper.Constants.SELECTED_MOVIE_TAG;
 import com.example.android.popularmovies.adapter.ReviewAdapter;
 import com.example.android.popularmovies.adapter.TrailerAdapter;
 import com.example.android.popularmovies.data.JsonMovieDataExtractor;
@@ -42,11 +41,13 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.Trai
     TextView mTrailerHeader;
     TextView mReviewHeader;
     TextView mNoInternetErrorMessage;
-    TextView getmNoInternetErrorMessageTrailers;
+    TextView mNoInternetErrorMessageTrailers;
     TextView mTvMovieTitle;
     TextView mTvMovieReleaseDate;
     TextView mTvMovieAverageRating;
     TextView mTvMovieOverview;
+    TextView mTvNoReviews;
+    TextView mTvNoTrailers;
     RecyclerView mTrailerRecyclerView;
     RecyclerView mReviewRecyclerView;
     ProgressBar mLoadingProgressBar;
@@ -60,7 +61,7 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.Trai
     public static MovieDetailFragment newInstance(Movie selectedMovie) {
         MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(SELECTED_MOVIE_TAG, selectedMovie);
+        bundle.putParcelable(Constants.SELECTED_MOVIE_TAG, selectedMovie);
         movieDetailFragment.setArguments(bundle);
         return movieDetailFragment;
     }
@@ -69,7 +70,7 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.Trai
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        selectedMovie = getArguments().getParcelable(SELECTED_MOVIE_TAG);
+        selectedMovie = getArguments().getParcelable(Constants.SELECTED_MOVIE_TAG);
     }
 
     @Override
@@ -81,11 +82,13 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.Trai
         mTrailerHeader = (TextView) rootView.findViewById(R.id.trailer_header);
         mReviewHeader = (TextView) rootView.findViewById(R.id.review_header);
         mNoInternetErrorMessage = (TextView) rootView.findViewById(R.id.tv_no_internet_error_message);
-        getmNoInternetErrorMessageTrailers = (TextView) rootView.findViewById(R.id.tv_no_internet_error_message_trailers);
+        mNoInternetErrorMessageTrailers = (TextView) rootView.findViewById(R.id.tv_no_internet_error_message_trailers);
         mTvMovieTitle = (TextView) rootView.findViewById(R.id.tv_movie_title);
         mTvMovieReleaseDate = (TextView) rootView.findViewById(R.id.tv_movie_release_date);
         mTvMovieAverageRating = (TextView) rootView.findViewById(R.id.tv_movie_average_rating);
         mTvMovieOverview = (TextView) rootView.findViewById(R.id.tv_movie_overview);
+        mTvNoReviews = (TextView) rootView.findViewById(R.id.no_reviews_found);
+        mTvNoTrailers = (TextView) rootView.findViewById(R.id.no_trailers_found);
         mTrailerRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_trailers);
         mReviewRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_reviews);
         mLoadingProgressBar = (ProgressBar) rootView.findViewById(R.id.pb_loading_indicator);
@@ -206,9 +209,11 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.Trai
 
         @Override
         protected void onPostExecute(ArrayList<Trailer> results) {
-            if (results != null) {
+            if (results != null && !results.isEmpty()) {
                 trailerAdapter.addTrailers(results);
-                showMoviesView();
+                showTrailersView();
+            } else {
+                showNoTrailersView();
             }
         }
     }
@@ -242,22 +247,45 @@ public class MovieDetailFragment extends Fragment implements TrailerAdapter.Trai
 
         @Override
         protected void onPostExecute(ArrayList<Review> results) {
-            reviewAdapter.addReviews(results);
-            showMoviesView();
+            if (results != null && !results.isEmpty()) {
+                reviewAdapter.addReviews(results);
+                showReviewsView();
+            } else {
+                showNoReviewsView();
+            }
         }
     }
 
-    public void showMoviesView() {
-        mNoInternetErrorMessage.setVisibility(View.INVISIBLE);
-        getmNoInternetErrorMessageTrailers.setVisibility(View.INVISIBLE);
+    public void showReviewsView() {
         mReviewRecyclerView.setVisibility(View.VISIBLE);
+        mTvNoReviews.setVisibility(View.INVISIBLE);
+        mNoInternetErrorMessage.setVisibility(View.INVISIBLE);
+        mNoInternetErrorMessageTrailers.setVisibility(View.INVISIBLE);
+    }
+
+    private void showTrailersView() {
         mTrailerRecyclerView.setVisibility(View.VISIBLE);
+        mNoInternetErrorMessage.setVisibility(View.INVISIBLE);
+        mNoInternetErrorMessageTrailers.setVisibility(View.INVISIBLE);
+        mTvNoTrailers.setVisibility(View.INVISIBLE);
     }
 
     public void showErrorMessageView() {
         mNoInternetErrorMessage.setVisibility(View.VISIBLE);
-        getmNoInternetErrorMessageTrailers.setVisibility(View.VISIBLE);
+        mNoInternetErrorMessageTrailers.setVisibility(View.VISIBLE);
         mReviewRecyclerView.setVisibility(View.INVISIBLE);
         mTrailerRecyclerView.setVisibility(View.INVISIBLE);
+        mTvNoReviews.setVisibility(View.INVISIBLE);
+        mTvNoTrailers.setVisibility(View.INVISIBLE);
+    }
+
+    private void showNoReviewsView() {
+        mReviewRecyclerView.setVisibility(View.INVISIBLE);
+        mTvNoReviews.setVisibility(View.VISIBLE);
+    }
+
+    private void showNoTrailersView() {
+        mTrailerRecyclerView.setVisibility(View.INVISIBLE);
+        mTvNoTrailers.setVisibility(View.VISIBLE);
     }
 }

@@ -20,6 +20,8 @@
     <string name="review_header">Reviews</string>
     <string name="overview_header">Overview</string>
     <string name="detail_activity_title">Details</string>
+    <string name="no_reviews_found_message">No reviews found for this movie.</string>
+    <string name="no_trailers_found_message">No trailers found for this movie.</string>
 </resources>
 
 

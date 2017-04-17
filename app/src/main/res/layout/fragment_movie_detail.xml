@@ -50,8 +50,7 @@
                     android:id="@+id/tv_movie_overview"
                     android:textColor="@color/white"
                     android:text="Some movie where someone, played by someone you know, does something crazy. Action and love scenes abound. Everything works
-                out in the end. Blaaahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
-                Blahhhh blahhhhhhhhhhhh."
+                out in the end."
                     android:textStyle="bold"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -63,6 +62,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="225dp"
+                    android:id="@+id/trailer_box"
                     android:orientation="vertical">
 
                     <TextView
@@ -89,9 +89,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="-200dp"
+                        android:textColor="@color/white"
                         android:id="@+id/tv_no_internet_error_message_trailers"
                         android:text="@string/no_internet_error_message"
                         android:textSize="20sp"
+                        android:padding="25dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-100dp"
+                        android:id="@+id/no_trailers_found"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"
+                        android:text="@string/no_trailers_found_message"
+                        android:textSize="15sp"
                         android:padding="25dp"/>
 
                 </LinearLayout>
@@ -99,6 +111,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="225dp"
+                    android:id="@+id/review_box"
                     android:orientation="vertical">
 
                     <TextView
@@ -120,21 +133,25 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"/>
 
-                    <!--<ProgressBar-->
-                        <!--android:id="@+id/pb_loading_indicator"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_marginTop="-110dp"-->
-                        <!--android:layout_gravity="center"-->
-                        <!--android:visibility="invisible" />-->
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="-200dp"
+                        android:textColor="@color/white"
                         android:id="@+id/tv_no_internet_error_message"
                         android:text="@string/no_internet_error_message"
                         android:textSize="20sp"
+                        android:padding="25dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-100dp"
+                        android:textColor="@color/white"
+                        android:id="@+id/no_reviews_found"
+                        android:text="@string/no_reviews_found_message"
+                        android:layout_gravity="center"
+                        android:textSize="15sp"
                         android:padding="25dp"/>
 
                 </LinearLayout>

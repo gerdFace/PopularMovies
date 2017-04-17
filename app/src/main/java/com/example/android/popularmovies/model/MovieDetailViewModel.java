@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.util.Log;
 import com.example.android.popularmovies.data.FavoritesContract;
 import com.example.android.popularmovies.data.FavoritesProvider;
+import com.example.android.popularmovies.helper.Constants;
 import static android.content.ContentValues.TAG;
 
 public class MovieDetailViewModel {
@@ -25,18 +26,18 @@ public class MovieDetailViewModel {
     //    @ http://stackoverflow.com/questions/574195/android-youtube-app-play-video-intent
     public void playTrailer(Trailer selectedTrailer) {
         if (checkIfYouTubeAppIsInstalled()) {
-            Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" +
+            Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.YOUTUBE_APP_URI +
                                                                                 selectedTrailer.getTrailerKey()));
             context.startActivity(appIntent);
         } else {
             Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                                          Uri.parse("http://www.youtube.com/watch?v=" + selectedTrailer.getTrailerKey()));
+                                          Uri.parse(Constants.YOUTUBE_PATH + selectedTrailer.getTrailerKey()));
             context.startActivity(webIntent);
         }
     }
 
     public void shareTrailer(Trailer selectedTrailer) {
-        String youtubeUri = "https://www.youtube.com/watch?v=" + selectedTrailer.getTrailerKey();
+        String youtubeUri = Constants.YOUTUBE_PATH + selectedTrailer.getTrailerKey();
         String mimeType = "text/plain";
         Intent shareTrailerIntent = new Intent()
                 .setAction(Intent.ACTION_SEND)
@@ -46,10 +47,9 @@ public class MovieDetailViewModel {
     }
 
     private boolean checkIfYouTubeAppIsInstalled() {
-        String youTubePackage = "com.google.android.youtube";
         PackageManager packageManager = context.getPackageManager();
         try {
-            packageManager.getPackageInfo(youTubePackage, PackageManager.GET_ACTIVITIES);
+            packageManager.getPackageInfo(Constants.YOUTUBE_PACKAGE, PackageManager.GET_ACTIVITIES);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();

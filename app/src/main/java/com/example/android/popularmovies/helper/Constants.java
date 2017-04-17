@@ -15,7 +15,25 @@ public class Constants {
     public static final String POPULAR_SORT = "popular";
     public static final String FAVORITE_SORT = "favorites";
     public static final String NO_INTERNET = "no_internet";
-    public static final String MAIN_FRAGMENT_BUNDLE_ID = "main_fragment_bundle_id";
+    public static final String MAIN_FRAGMENT_ID = "main_fragment_bundle_id";
     public static final String MAIN_FRAGMENT_TAG = "main_fragment_tag";
     public static final String SELECTED_MOVIE_TAG = "selected_movie";
+    public static final String YOUTUBE_PATH = "http://www.youtube.com/watch?v=";
+    public static final String YOUTUBE_APP_URI = "vnd.youtube:";
+    public static final String YOUTUBE_PACKAGE = "com.google.android.youtube";
+    public static final String POSTER_BASE_PATH = "http://image.tmdb.org/t/p/";
+    public static final String POSTER_SIZE = "w500";
+    public static final String BACKDROP_SIZE = "original";
+    public static final String BACKDROP_PATH = "backdrop_path";
+    public static final String MOVIE_ARRAY = "results";
+    public static final String MOVIE_TITLE = "original_title";
+    public static final String POSTER_PATH = "poster_path";
+    public static final String OVERVIEW = "overview";
+    public static final String RELEASE_DATE = "release_date";
+    public static final String VOTE_AVERAGE = "vote_average";
+    public static final String MOVIE_ID = "id";
+    public static final String VIDEO_KEY = "key";
+    public static final String VIDEO_NAME = "name";
+    public static final String REVIEW_AUTHOR = "author";
+    public static final String REVIEW_CONTENT = "content";
 }

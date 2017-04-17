@@ -3,10 +3,6 @@ package com.example.android.popularmovies.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by gerdface on 3/30/17.
- */
-
 public class Trailer implements Parcelable {
 
     private String movieId;

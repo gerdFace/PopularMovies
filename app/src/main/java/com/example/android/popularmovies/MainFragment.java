@@ -38,8 +38,6 @@ public class MainFragment extends Fragment {
     private static final String TAG = MainFragment.class.getSimpleName();
     private MovieAdapter mMovieAdapter;
     private SharedPreferences mLastUsedSortPreference;
-    private MovieAdapterOnClickHandler mCallback;
-    private View mView;
     private MainViewModel mainViewModel;
 
     @BindView(R.id.rv_movies)
@@ -80,7 +78,6 @@ public class MainFragment extends Fragment {
 
         ButterKnife.bind(this, view);
         Log.i(TAG, "onCreateView");
-        mView = view;
 
         mainViewModel = new MainViewModel(getActivity());
 
@@ -103,7 +100,7 @@ public class MainFragment extends Fragment {
         mMovieRecyclerView.setAdapter(mMovieAdapter);
     }
 
-    public int getOrientation() {
+    private int getOrientation() {
         if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             return 3;
         } else {
@@ -170,6 +167,7 @@ public class MainFragment extends Fragment {
             mLoadingProgressBar.setVisibility(View.INVISIBLE);
             if (results != null) {
                 mMovieAdapter.addMovies(results);
+                showMoviesView();
             } else {
                 showErrorMessage(Constants.FAVORITE_SORT);
             }
@@ -186,40 +184,36 @@ public class MainFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuItemId = item.getItemId();
 
-        if (menuItemId == R.id.action_sort_most_popular && !isAlreadySorted(Constants.POPULAR_SORT)) {
+        if (menuItemId == R.id.action_sort_most_popular) {
             updateSortPreference(Constants.POPULAR_SORT);
             mMovieAdapter.clearMovies();
             fetchMovies(Constants.POPULAR_SORT);
 
-        } else if (menuItemId == R.id.action_sort_top_rated && !isAlreadySorted(Constants.TOP_RATED_SORT)) {
-            fetchMovies(Constants.TOP_RATED_SORT);
+        } else if (menuItemId == R.id.action_sort_top_rated) {
             mMovieAdapter.clearMovies();
             updateSortPreference(Constants.TOP_RATED_SORT);
+            fetchMovies(Constants.TOP_RATED_SORT);
 
         } else if (menuItemId == R.id.action_sort_favorites) {
-            fetchMovies(Constants.FAVORITE_SORT);
             mMovieAdapter.clearMovies();
             updateSortPreference(Constants.FAVORITE_SORT);
+            fetchMovies(Constants.FAVORITE_SORT);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean isAlreadySorted(String sortedBy) {
-        return mLastUsedSortPreference.getString(Constants.PREF_KEY, "").equals(sortedBy);
-    }
-
-    public void updateSortPreference(String sortPreference) {
+    private void updateSortPreference(String sortPreference) {
         SharedPreferences.Editor sortEditor = mLastUsedSortPreference.edit();
         sortEditor.putString(Constants.PREF_KEY, sortPreference);
         sortEditor.apply();
     }
 
-    public void showMoviesView() {
+    private void showMoviesView() {
         mErrorMessage.setVisibility(View.INVISIBLE);
         mMovieRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    public void showErrorMessage(String messageToDisplay) {
+    private void showErrorMessage(String messageToDisplay) {
         mErrorMessage.setVisibility(View.VISIBLE);
         mMovieRecyclerView.setVisibility(View.INVISIBLE);
 
