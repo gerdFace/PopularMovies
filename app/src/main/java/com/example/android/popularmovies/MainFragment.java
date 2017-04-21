@@ -39,6 +39,7 @@ public class MainFragment extends Fragment {
     private MovieAdapter mMovieAdapter;
     private SharedPreferences mLastUsedSortPreference;
     private MainViewModel mainViewModel;
+    private ArrayList<Movie> movies;
 
     @BindView(R.id.rv_movies)
     RecyclerView mMovieRecyclerView;
@@ -62,11 +63,24 @@ public class MainFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(Constants.SAVED_STATE_MOVIES_LIST, movies);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
+
+        movies = new ArrayList<>();
+
+        if (savedInstanceState != null) {
+            movies = savedInstanceState.getParcelableArrayList(Constants.SAVED_STATE_MOVIES_LIST);
+        }
+
         setHasOptionsMenu(true);
-        setRetainInstance(true);
+//        setRetainInstance(true);
     }
 
     @Nullable
@@ -84,10 +98,15 @@ public class MainFragment extends Fragment {
         return view;
     }
 
+//    TODO update movies list from cache when fragment is in focus
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fetchMovies(getSortPreference());
+        if (movies.size() > 0) {
+            mMovieAdapter.addMovies(movies);
+        } else {
+            fetchMovies(getSortPreference());
+        }
     }
 
     @Override

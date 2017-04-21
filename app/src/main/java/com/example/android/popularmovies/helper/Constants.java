@@ -18,6 +18,7 @@ public class Constants {
     public static final String MAIN_FRAGMENT_ID = "main_fragment_bundle_id";
     public static final String MAIN_FRAGMENT_TAG = "main_fragment_tag";
     public static final String SELECTED_MOVIE_TAG = "selected_movie";
+    public static final String SAVED_STATE_MOVIES_LIST = "movies_list";
     public static final String YOUTUBE_PATH = "http://www.youtube.com/watch?v=";
     public static final String YOUTUBE_APP_URI = "vnd.youtube:";
     public static final String YOUTUBE_PACKAGE = "com.google.android.youtube";
