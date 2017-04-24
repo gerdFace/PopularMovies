@@ -2,10 +2,13 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,13 +36,14 @@ import butterknife.ButterKnife;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String TAG = MainFragment.class.getSimpleName();
     private MovieAdapter mMovieAdapter;
     private SharedPreferences mLastUsedSortPreference;
     private MainViewModel mainViewModel;
     private ArrayList<Movie> movies;
+    public static final int ID_MOVIE_LOADER =  44;
 
     @BindView(R.id.rv_movies)
     RecyclerView mMovieRecyclerView;
@@ -140,6 +144,21 @@ public class MainFragment extends Fragment {
             new FetchMoviesTask().execute(sortBy);
             showMoviesView();
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
     private class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
