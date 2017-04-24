@@ -1,17 +1,17 @@
 package com.example.android.popularmovies;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.example.android.popularmovies.adapter.MovieAdapter;
+import com.example.android.popularmovies.data.FavoritesProvider;
 import com.example.android.popularmovies.data.JsonMovieDataExtractor;
 import com.example.android.popularmovies.helper.Constants;
 import com.example.android.popularmovies.helper.HttpPathListCreator;
@@ -36,14 +37,13 @@ import butterknife.ButterKnife;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
-public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<Movie>>{
 
     private static final String TAG = MainFragment.class.getSimpleName();
     private MovieAdapter mMovieAdapter;
     private SharedPreferences mLastUsedSortPreference;
     private MainViewModel mainViewModel;
-    private ArrayList<Movie> movies;
-    public static final int ID_MOVIE_LOADER =  44;
+    public static final int MOVIE_LOADER =  11;
 
     @BindView(R.id.rv_movies)
     RecyclerView mMovieRecyclerView;
@@ -57,19 +57,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public MainFragment() {
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
     public interface MovieAdapterOnClickHandler {
         void onClick(Movie selectedMovie);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(Constants.SAVED_STATE_MOVIES_LIST, movies);
+    public void onResume() {
+        super.onResume();
+        if (getSortPreference().equals(Constants.FAVORITE_SORT)) {
+            fetchMovies(Constants.FAVORITE_SORT);
+        }
     }
 
     @Override
@@ -77,14 +74,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
 
-        movies = new ArrayList<>();
-
-        if (savedInstanceState != null) {
-            movies = savedInstanceState.getParcelableArrayList(Constants.SAVED_STATE_MOVIES_LIST);
-        }
-
         setHasOptionsMenu(true);
-//        setRetainInstance(true);
     }
 
     @Nullable
@@ -97,20 +87,15 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         ButterKnife.bind(this, view);
         Log.i(TAG, "onCreateView");
 
-        mainViewModel = new MainViewModel(getActivity());
+        mainViewModel = new MainViewModel();
 
         return view;
     }
 
-//    TODO update movies list from cache when fragment is in focus
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (movies.size() > 0) {
-            mMovieAdapter.addMovies(movies);
-        } else {
-            fetchMovies(getSortPreference());
-        }
+        fetchMovies(getSortPreference());
     }
 
     @Override
@@ -141,75 +126,107 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         if (!TestInternetConnectivity.isDeviceOnline(getActivity()) && !sortBy.equals(Constants.FAVORITE_SORT)) {
             showErrorMessage(Constants.NO_INTERNET);
         } else {
-            new FetchMoviesTask().execute(sortBy);
+            Bundle searchPreferenceBundle = new Bundle();
+            searchPreferenceBundle.putString(Constants.PREF_BUNDLE_KEY, sortBy);
+            LoaderManager loaderManager = getActivity().getSupportLoaderManager();
+            Loader<ArrayList<Movie>> movieLoader = loaderManager.getLoader(MOVIE_LOADER);
+
+            if (movieLoader == null) {
+                loaderManager.initLoader(MOVIE_LOADER, searchPreferenceBundle, this);
+            } else {
+                loaderManager.restartLoader(MOVIE_LOADER, searchPreferenceBundle, this);
+            }
             showMoviesView();
         }
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
+    public Loader<ArrayList<Movie>> onCreateLoader(int id, final Bundle args) {
+        return new AsyncTaskLoader<ArrayList<Movie>>(getActivity()) {
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            ArrayList<Movie> mMovieList;
 
-    }
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                if (args == null) {
+                    return;
+                }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
-    private class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected ArrayList<Movie> doInBackground(String... params) {
-
-            if (params.length == 0) {
-                return null;
+                if (mMovieList != null) {
+                    deliverResult(mMovieList);
+                } else {
+                    forceLoad();
+                }
             }
 
-            switch (params[0]) {
-
-                case Constants.POPULAR_SORT:
-                case Constants.TOP_RATED_SORT:
-                    String sortPreference = params[0];
-                    NetworkConnector networkConnector = new NetworkConnector();
-                    URL movieRequestUrl = networkConnector.buildUrl(new HttpPathListCreator().createListForHttpPath(Constants.MOVIES, sortPreference));
-
-                    try {
-                        String jsonMovieResponse = networkConnector.getResponseFromHttpUrl(movieRequestUrl);
-
-                        return new JsonMovieDataExtractor().getExtractedMovieStringsFromJson(jsonMovieResponse);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-
-                case Constants.FAVORITE_SORT:
-                    return mainViewModel.queryFavoriteDatabase();
-
-                default:
+            @Override
+            public ArrayList<Movie> loadInBackground() {
+                String searchPreferenceFromBundle = args.getString(Constants.PREF_BUNDLE_KEY);
+                if (searchPreferenceFromBundle == null || TextUtils.isEmpty(searchPreferenceFromBundle)) {
                     return null;
+                }
+
+                switch (searchPreferenceFromBundle) {
+
+                    case Constants.POPULAR_SORT:
+                    case Constants.TOP_RATED_SORT:
+                        NetworkConnector networkConnector = new NetworkConnector();
+                        URL movieRequestUrl = networkConnector.buildUrl(new HttpPathListCreator().createListForHttpPath(Constants.MOVIES, searchPreferenceFromBundle));
+
+                        try {
+                            String jsonMovieResponse = networkConnector.getResponseFromHttpUrl(movieRequestUrl);
+
+                            return new JsonMovieDataExtractor().getExtractedMovieStringsFromJson(jsonMovieResponse);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+
+                    case Constants.FAVORITE_SORT:
+                        Log.d(TAG, "Loading from local db");
+                        Cursor cursor = getActivity().getContentResolver()
+                                .query(FavoritesProvider.Favorites.CONTENT_URI, null, null, null, null);
+
+                        if (cursor != null) {
+                            Log.d(TAG, "NonNull cursor");
+                            mMovieAdapter.clearMovies();
+                            ArrayList<Movie> favoriteList = mainViewModel.queryFavoriteDatabase(cursor);
+                            cursor.close();
+                            return favoriteList;
+                        } else {
+                            return null;
+                        }
+
+                    default:
+                        return null;
+                }
             }
+
+            @Override
+            public void deliverResult(ArrayList<Movie> data) {
+                mMovieList = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> movies) {
+        mLoadingProgressBar.setVisibility(View.INVISIBLE);
+        if (movies != null) {
+            mMovieAdapter.addMovies(movies);
+            showMoviesView();
+        } else {
+            showErrorMessage(Constants.FAVORITE_SORT);
         }
 
-        @Override
-        protected void onPostExecute(ArrayList<Movie> results) {
-            mLoadingProgressBar.setVisibility(View.INVISIBLE);
-            if (results != null) {
-                mMovieAdapter.addMovies(results);
-                showMoviesView();
-            } else {
-                showErrorMessage(Constants.FAVORITE_SORT);
-            }
-        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
+        Log.d(TAG, "Loader restarting");
     }
 
     @Override

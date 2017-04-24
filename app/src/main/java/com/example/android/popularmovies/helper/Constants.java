@@ -5,12 +5,13 @@ public class Constants {
     public static final String TRAILERS = "videos";
     public static final String MOVIES = "movie";
     public static final String REVIEWS = "reviews";
-    public final static String TMDB_KEY = "";
-    public final static String KEY = "api_key";
+    public static final String TMDB_KEY = "";
+    public static final String KEY = "api_key";
     public static final String ERROR_CANNOT_CONNECT_TO_THE_MOVIE_DATABASE = "Error: cannot connect to the movie database";
-    public final static String TMDB_BASE_URL = "https://api.themoviedb.org/3";
+    public static final String TMDB_BASE_URL = "https://api.themoviedb.org/3";
     public static final String PREF_NAME = "last_sort_setting";
     public static final String PREF_KEY = "last_sort_string";
+    public static final String PREF_BUNDLE_KEY = "pref_bundle_key";
     public static final String TOP_RATED_SORT = "top_rated";
     public static final String POPULAR_SORT = "popular";
     public static final String FAVORITE_SORT = "favorites";
@@ -18,7 +19,6 @@ public class Constants {
     public static final String MAIN_FRAGMENT_ID = "main_fragment_bundle_id";
     public static final String MAIN_FRAGMENT_TAG = "main_fragment_tag";
     public static final String SELECTED_MOVIE_TAG = "selected_movie";
-    public static final String SAVED_STATE_MOVIES_LIST = "movies_list";
     public static final String YOUTUBE_PATH = "http://www.youtube.com/watch?v=";
     public static final String YOUTUBE_APP_URI = "vnd.youtube:";
     public static final String YOUTUBE_PACKAGE = "com.google.android.youtube";

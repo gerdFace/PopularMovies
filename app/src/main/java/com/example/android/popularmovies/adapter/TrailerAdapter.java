@@ -9,13 +9,10 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Trailer;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
-
 import static android.content.ContentValues.TAG;
 
 

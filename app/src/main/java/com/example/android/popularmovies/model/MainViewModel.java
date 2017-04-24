@@ -1,18 +1,13 @@
 package com.example.android.popularmovies.model;
 
-import android.content.Context;
 import android.database.Cursor;
 import com.example.android.popularmovies.data.FavoritesContract;
-import com.example.android.popularmovies.data.FavoritesProvider;
 import com.example.android.popularmovies.helper.Constants;
 import java.util.ArrayList;
 
 public class MainViewModel {
 
-    private Context context;
-
-    public MainViewModel(Context context) {
-        this.context = context;
+    public MainViewModel() {
     }
 
     public String getSortOrderString(String sortPreferenceString) {
@@ -25,10 +20,8 @@ public class MainViewModel {
         return sortPreference;
     }
 
-    public ArrayList<Movie> queryFavoriteDatabase() {
+    public ArrayList<Movie> queryFavoriteDatabase(Cursor cursor) {
         ArrayList<Movie> favoriteMovieList = new ArrayList<>();
-        Cursor cursor = context.getContentResolver()
-                .query(FavoritesProvider.Favorites.CONTENT_URI, null, null, null, null);
         if (cursor.getCount() > 0) {
 
             while (cursor.moveToNext()) {
@@ -43,7 +36,6 @@ public class MainViewModel {
                 );
                 favoriteMovieList.add(favoriteMovie);
             }
-            cursor.close();
             return favoriteMovieList;
         } else {
             return null;
